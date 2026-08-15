@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 import CurvedLoop from "@/components/reactbits/curved-loop"
+import ScrollVelocity from "@/components/reactbits/scroll-velocity"
 import { Container, CtaButton } from "@/components/site-3/primitives"
 import { AnimatedHeading } from "@/components/site-3/animated-heading"
 import { closingCta } from "@/lib/site-3/content"
@@ -14,13 +15,27 @@ import { closingCta } from "@/lib/site-3/content"
 export function ClosingCta() {
   return (
     <section className="relative overflow-hidden border-t border-border pt-28 pb-28 md:pt-40 md:pb-40">
-      <div aria-hidden className="text-muted-foreground/30">
+      {/* O caminho curvo precisa de largura para a curva se ler como curva.
+          Em tela estreita ela vira uma linha torta e o texto sai deformado,
+          então o mobile recebe uma faixa reta cuja velocidade responde ao
+          scroll: o mesmo papel de respiro tipográfico, com o gesto que existe
+          no toque. */}
+      <div aria-hidden className="hidden text-muted-foreground/30 md:block">
         <CurvedLoop
           marqueeText="Vibração ✦ vira ✦ forma ✦"
           speed={1.2}
           curveAmount={220}
           interactive={false}
           className="fill-current"
+        />
+      </div>
+
+      <div aria-hidden className="text-muted-foreground/40 md:hidden">
+        <ScrollVelocity
+          texts={["Vibração vira forma ✦", "Design é frequência ✦"]}
+          velocity={48}
+          numCopies={4}
+          className="text-[2.25rem] leading-none font-medium tracking-[-0.03em]"
         />
       </div>
 

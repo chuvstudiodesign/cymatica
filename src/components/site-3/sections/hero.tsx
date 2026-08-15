@@ -6,6 +6,7 @@ import { ArrowDown } from "lucide-react"
 import TextPressure from "@/components/reactbits/text-pressure"
 import { Container, CtaButton } from "@/components/site-3/primitives"
 import { MorphingMark } from "@/components/site-3/morphing-mark"
+import { ScrollMarkBand } from "@/components/site-3/scroll-mark-band"
 import { AnimatedHeading } from "@/components/site-3/animated-heading"
 import { hero } from "@/lib/site-3/content"
 
@@ -35,7 +36,7 @@ export function Hero() {
           <div className="lg:col-span-7 xl:col-span-6">
             <p className="site-label text-muted-foreground">{hero.label}</p>
 
-            <AnimatedHeading as="h1" className="site-h2 mt-8 text-balance" delay={0.1}>
+            <AnimatedHeading as="h1" className="site-h1 mt-8 text-balance" delay={0.1}>
               {hero.title}
             </AnimatedHeading>
 
@@ -60,6 +61,9 @@ export function Hero() {
             </div>
           </div>
         </div>
+
+        {/* Sem ponteiro, a área abaixo dos CTAs ficava um bloco inerte. */}
+        <ScrollMarkBand className="mt-14 lg:hidden" />
       </Container>
 
       <div className="relative z-10">

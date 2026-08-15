@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react"
 import { Section, SectionLabel } from "@/components/site-3/primitives"
 import { AnimatedHeading } from "@/components/site-3/animated-heading"
 import { HoverExpandGallery } from "@/components/site-3/hover-expand-gallery"
-import { ProjectCard } from "@/components/site-3/project-card"
+import { ExpandStackGallery } from "@/components/site-3/expand-stack-gallery"
 import { projects, BASE } from "@/lib/site-3/content"
 
 /**
@@ -54,12 +54,9 @@ export function Projects() {
         </div>
       </div>
 
-      <div className="mt-20 grid gap-x-6 gap-y-20 sm:grid-cols-2 lg:hidden">
-        {projects.map((project, i) => (
-          <div key={project.slug} data-reveal="">
-            <ProjectCard project={project} priority={i === 0} />
-          </div>
-        ))}
+      {/* No toque, o mesmo acordeão empilhado na vertical. */}
+      <div data-reveal="" className="mt-14 lg:hidden">
+        <ExpandStackGallery projects={projects} initialSlug="makakitus" />
       </div>
     </Section>
   )

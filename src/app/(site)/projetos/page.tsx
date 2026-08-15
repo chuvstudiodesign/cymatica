@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { Container, SectionLabel } from "@/components/site-3/primitives"
 import { AnimatedHeading } from "@/components/site-3/animated-heading"
 import { HoverExpandGallery } from "@/components/site-3/hover-expand-gallery"
-import { ProjectCard } from "@/components/site-3/project-card"
+import { ExpandStackGallery } from "@/components/site-3/expand-stack-gallery"
 import { MoreProjects } from "@/components/site-3/more-projects"
 import { ClosingCta } from "@/components/site-3/sections/closing-cta"
 import { projects, drawerProjects } from "@/lib/site-3/content"
@@ -47,12 +47,8 @@ export default function ProjetosPage() {
             <HoverExpandGallery projects={projects} initialSlug="makakitus" />
           </div>
 
-          <div className="mt-20 grid gap-x-6 gap-y-20 sm:grid-cols-2 lg:hidden">
-            {projects.map((project, i) => (
-              <div key={project.slug} data-reveal="">
-                <ProjectCard project={project} priority={i < 2} />
-              </div>
-            ))}
+          <div data-reveal="" className="mt-14 lg:hidden">
+            <ExpandStackGallery projects={projects} initialSlug="makakitus" />
           </div>
 
           <MoreProjects projects={drawerProjects} />

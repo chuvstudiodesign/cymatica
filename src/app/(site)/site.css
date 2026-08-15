@@ -12,6 +12,16 @@
   font-weight: 500;
 }
 
+/* O h1 do herói tem escala própria: com a do h2, o clamp travava em
+   2.25rem no mobile e o título ficava pequeno demais para o peso que
+   tem na página. O piso sobe, o teto continua o mesmo. */
+.site-h1 {
+  font-size: clamp(2.75rem, 6.4vw, 5rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+}
+
 .site-h2 {
   font-size: clamp(2.25rem, 5.5vw, 5rem);
   line-height: 0.98;
