@@ -14,6 +14,7 @@ import { ClosingCta } from "@/components/site-3/sections/closing-cta"
 import { about, manifesto, studio } from "@/lib/site-3/content"
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/sobre" },
   title: "Sobre",
   description: about.lead,
 }

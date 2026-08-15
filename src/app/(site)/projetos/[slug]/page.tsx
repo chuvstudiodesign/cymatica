@@ -17,6 +17,7 @@ export async function generateMetadata(props: PageProps<"/projetos/[slug]">) {
   const project = allProjects.find((p) => p.slug === slug)
   if (!project) return {}
   return {
+    alternates: { canonical: `/projetos/${slug}` },
     title: project.client,
     description: project.summary,
     openGraph: { images: [{ url: project.cover.src }] },

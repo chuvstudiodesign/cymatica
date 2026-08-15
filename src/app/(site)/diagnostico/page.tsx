@@ -6,6 +6,7 @@ import { DiagnosticForm } from "@/components/site-3/diagnostic-form"
 import { diagnostic } from "@/lib/site-3/content"
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/diagnostico" },
   title: "Diagnóstico",
   description:
     "Um diagnóstico da sua marca sem custo: onde ela está hoje, o que já funciona e o que o design resolve primeiro.",

@@ -8,6 +8,7 @@ import { BudgetRequestForm } from "@/components/site-3/budget-request-form"
 import { BASE } from "@/lib/site-3/content"
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/orcamento" },
   title: "Orçamento",
   description:
     "Diga quanto você pode investir e o que precisa. Voltamos com escopo, entregáveis e prazo.",

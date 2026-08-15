@@ -17,7 +17,11 @@ export async function generateMetadata(props: PageProps<"/servicos/[slug]">) {
   const { slug } = await props.params
   const service = services.find((s) => s.slug === slug)
   if (!service) return {}
-  return { title: service.name, description: service.benefit }
+  return {
+    alternates: { canonical: `/servicos/${slug}` },
+    title: service.name,
+    description: service.benefit,
+  }
 }
 
 export default async function ServicoPage(props: PageProps<"/servicos/[slug]">) {

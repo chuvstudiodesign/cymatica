@@ -8,6 +8,7 @@ import { ContactForm } from "@/components/site-3/contact-form"
 import { contact, studio, instagram, whatsapp, whatsappLink, BASE } from "@/lib/site-3/content"
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/contato" },
   title: "Contato",
   description: contact.body,
 }

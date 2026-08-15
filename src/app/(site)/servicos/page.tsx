@@ -9,6 +9,7 @@ import { ClosingCta } from "@/components/site-3/sections/closing-cta"
 import { services, BASE } from "@/lib/site-3/content"
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/servicos" },
   title: "Serviços",
   description:
     "Design de marca, experiência digital, interface de apps, motion, identidade verbal e sonora, type design e desenvolvimento de software.",

@@ -9,6 +9,7 @@ import { ClosingCta } from "@/components/site-3/sections/closing-cta"
 import { projects, drawerProjects } from "@/lib/site-3/content"
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/projetos" },
   title: "Projetos",
   description:
     "Identidades para alimentação, moda e varejo, cada uma construída a partir de uma restrição concreta.",
