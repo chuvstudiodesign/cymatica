@@ -12,7 +12,7 @@ export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }))
 }
 
-export async function generateMetadata(props: PageProps<"/site-3/projetos/[slug]">) {
+export async function generateMetadata(props: PageProps<"/projetos/[slug]">) {
   const { slug } = await props.params
   const project = projects.find((p) => p.slug === slug)
   if (!project) return {}
@@ -23,7 +23,7 @@ export async function generateMetadata(props: PageProps<"/site-3/projetos/[slug]
   }
 }
 
-export default async function ProjetoPage(props: PageProps<"/site-3/projetos/[slug]">) {
+export default async function ProjetoPage(props: PageProps<"/projetos/[slug]">) {
   const { slug } = await props.params
   const index = projects.findIndex((p) => p.slug === slug)
   if (index === -1) notFound()

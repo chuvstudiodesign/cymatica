@@ -1,5 +1,5 @@
 /**
- * Copy próprio do /site-3.
+ * Copy próprio do site institucional.
  *
  * Substitui os trechos herdados do site anterior. Duas regras guiaram a
  * reescrita:
@@ -30,8 +30,8 @@ export const hero = {
   display: "CYMATICA",
   title: "Design de alta qualidade deixou de ser privilégio.",
   body: "Identidades e experiências para marcas que precisam ser reconhecíveis em qualquer superfície. Comece por um diagnóstico da sua marca, sem custo.",
-  primaryCta: { label: "Fazer diagnóstico", href: "/site-3/diagnostico" },
-  secondaryCta: { label: "Ver projetos", href: "/site-3/projetos" },
+  primaryCta: { label: "Fazer diagnóstico", href: "/diagnostico" },
+  secondaryCta: { label: "Ver projetos", href: "/projetos" },
 } as const
 
 /* ────────────────────────────- Manifesto ────────────────────────────── */
@@ -96,7 +96,7 @@ export const diagnostic = {
   ],
   /** Escassez explicada pela operação, não usada como filtro de status. */
   note: "Cada diagnóstico é feito à mão, então abrimos um número limitado por mês. Se o seu não entrar na leva atual, avisamos e reservamos a próxima data.",
-  cta: { label: "Solicitar diagnóstico", href: "/site-3/diagnostico" },
+  cta: { label: "Solicitar diagnóstico", href: "/diagnostico" },
 } as const
 
 /* ─────────────────────── IA dentro do processo ──────────────────────── */
@@ -179,5 +179,5 @@ export const method = {
 export const closingCta = {
   title: "Comece por um diagnóstico.",
   body: "Sem custo e sem compromisso de seguir. No fim você tem um retrato da sua marca e a ordem do que resolver primeiro.",
-  cta: { label: "Solicitar diagnóstico", href: "/site-3/diagnostico" },
+  cta: { label: "Solicitar diagnóstico", href: "/diagnostico" },
 } as const

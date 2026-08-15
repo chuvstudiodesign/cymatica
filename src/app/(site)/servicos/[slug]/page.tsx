@@ -13,14 +13,14 @@ export function generateStaticParams() {
   return services.map((service) => ({ slug: service.slug }))
 }
 
-export async function generateMetadata(props: PageProps<"/site-3/servicos/[slug]">) {
+export async function generateMetadata(props: PageProps<"/servicos/[slug]">) {
   const { slug } = await props.params
   const service = services.find((s) => s.slug === slug)
   if (!service) return {}
   return { title: service.name, description: service.benefit }
 }
 
-export default async function ServicoPage(props: PageProps<"/site-3/servicos/[slug]">) {
+export default async function ServicoPage(props: PageProps<"/servicos/[slug]">) {
   const { slug } = await props.params
   const service = services.find((s) => s.slug === slug)
   if (!service) notFound()

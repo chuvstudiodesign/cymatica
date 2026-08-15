@@ -1,5 +1,5 @@
 /**
- * Conteúdo do /site-3.
+ * Conteúdo do site institucional.
  *
  * O que muda em relação ao site anterior vive em `copy.ts` (texto reescrito),
  * `projects.ts` (portfólio real, extraído dos PDFs) e `testimonials.ts`. O
@@ -26,12 +26,18 @@ export { testimonials, type Testimonial } from "./testimonials"
 
 import { nav as baseNav, footer as baseFooter } from "@/lib/site/content"
 
-/** Raiz desta versão do site. */
-export const BASE = "/site-3"
+/**
+ * Prefixo das rotas do site.
+ *
+ * O site vive na raiz do domínio, dentro do route group `(site)` — os
+ * parênteses fazem a pasta não aparecer na URL. Por isso o prefixo é vazio, e
+ * os links são montados como `${BASE}/projetos`, que resolve para `/projetos`.
+ */
+export const BASE = ""
 
-/** `/site` → `/site-3`, preservando o resto do caminho. */
+/** `/site/algo` → `/algo`, e `/site` → `/`. */
 function rebase(href: string) {
-  return href.replace(/^\/site(?=\/|$)/, BASE)
+  return href.replace(/^\/site(?=\/|$)/, BASE) || "/"
 }
 
 export const nav = baseNav.map((item) => ({ ...item, href: rebase(item.href) }))

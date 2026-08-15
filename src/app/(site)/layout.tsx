@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-3/site-header"
 import { SiteFooter } from "@/components/site-3/site-footer"
 import { SmoothScrollProvider } from "@/components/site-3/smooth-scroll-provider"
-import "./site-3.css"
+import "./site.css"
 
 export const metadata: Metadata = {
   title: {
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
  * O cabeçalho fica fora do SmoothScrollProvider de propósito: o ScrollSmoother
  * aplica transform no wrapper, e `position: fixed` dentro dele para de grudar.
  */
-export default function SiteLayout({ children }: LayoutProps<"/site-3">) {
+export default function SiteLayout({ children }: LayoutProps<"/">) {
   return (
     <>
       <SiteHeader />

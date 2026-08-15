@@ -74,7 +74,7 @@ export function SiteHeader() {
           )}
         >
           <Link
-            href={BASE}
+            href="/"
             aria-label="Cymatica, página inicial"
             className="rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           >
