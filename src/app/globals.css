@@ -1,26 +1,305 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   CYMATICA — DESIGN TOKENS
+   Neutrals pixel-sampled from REFERENCIA VISUAL/{1,2,3}.png
+   Canvas #111111 · Surface #282828 · Muted #b5b5b5
+   Light canvas #fefefe · Success #4fb24a
+   Brand #ff5100 — supplied by the brand owner.
+   All text pairings verified at >= 4.5:1 (WCAG AA).
+   ============================================================ */
+
+/* `.light` mirrors `:root` so a light island can be nested inside a dark page
+   (and vice versa) — the styleguide uses this to show both themes at once. */
+:root,
+.light {
+  /* --- BRAND SCALE (hue 37.86, anchored on #ff5100 at 500) --- */
+  --brand-50: oklch(0.972 0.0142 37.86); /* #fff3ef */
+  --brand-100: oklch(0.938 0.0322 37.86); /* #ffe4db */
+  --brand-200: oklch(0.882 0.0644 37.86); /* #ffcaba */
+  --brand-300: oklch(0.812 0.1094 37.86); /* #ffa98e */
+  --brand-400: oklch(0.732 0.1688 37.86); /* #ff7d54 */
+  --brand-500: oklch(0.6717 0.2205 37.86); /* #ff5100 — the brand */
+  --brand-600: oklch(0.58 0.193 37.86); /* #d24100 */
+  --brand-700: oklch(0.505 0.166 37.86); /* #ae3400 */
+  --brand-800: oklch(0.425 0.1398 37.86); /* #8a2700 */
+  --brand-900: oklch(0.352 0.116 37.86); /* #6a1c00 */
+
+  /* --- NEUTRAL SCALE (every step below is a colour sampled from
+         the references; the brand is a true achromatic grey) --- */
+  --ink-50: oklch(0.9851 0 0); /* #fafafa */
+  --ink-100: oklch(0.9551 0 0); /* #f0f0f0 */
+  --ink-200: oklch(0.9128 0 0); /* #e2e2e2 */
+  --ink-300: oklch(0.8452 0 0); /* #cccccc — CTA pill */
+  --ink-400: oklch(0.7731 0 0); /* #b5b5b5 — muted copy */
+  --ink-500: oklch(0.6467 0 0); /* #8e8e8e */
+  --ink-600: oklch(0.5278 0 0); /* #6b6b6b */
+  --ink-700: oklch(0.4091 0 0); /* #4a4a4a */
+  --ink-800: oklch(0.2768 0 0); /* #282828 — nav / surface */
+  --ink-900: oklch(0.1776 0 0); /* #111111 — canvas */
+
+  /* --- SIGNATURE ACCENT --- */
+  /* The pure orange is reserved for large display type and
+     highlights (3.2:1 — AA at >=24px). Solid controls step down
+     to brand-600 so 14px labels clear 4.5:1. */
+  --brand: var(--brand-500);
+  --brand-foreground: oklch(0.1776 0 0);
+  /* The faintly green-tinted off-white behind the hero photography */
+  --bone: oklch(0.9419 0.0068 145.52); /* #e9ede9 */
+
+  /* === BASE === */
+  --background: oklch(0.997 0 0); /* #fefefe */
+  --foreground: oklch(0.1776 0 0); /* #111111 */
+
+  /* === CARD === */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.1776 0 0);
+
+  /* === POPOVER / DROPDOWN / TOOLTIP === */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.1776 0 0);
+
+  /* === PRIMARY === */
+  --primary: var(--brand-600); /* 4.63:1 on #fefefe */
+  --primary-foreground: oklch(0.997 0 0);
+
+  /* === SECONDARY === */
+  --secondary: var(--ink-100);
+  --secondary-foreground: oklch(0.1776 0 0);
+
+  /* === MUTED === */
+  --muted: var(--ink-100);
+  --muted-foreground: var(--ink-600); /* 5.28:1 on #fefefe */
+
+  /* === ACCENT === */
+  --accent: var(--bone);
+  --accent-foreground: oklch(0.1776 0 0);
+
+  /* === DESTRUCTIVE === */
+  /* A true red (hue 25 vs the brand's 38) so danger never reads as
+     "brand". base-nova renders this token as TEXT over a 10% tint, so
+     it must clear 4.5:1 on the page — 7.44:1 on #fefefe. */
+  --destructive: oklch(0.47 0.18 25);
+  --destructive-foreground: oklch(0.997 0 0);
+
+  /* === BORDERS & INPUTS === */
+  --border: var(--ink-200);
+  --input: var(--ink-300);
+  --ring: var(--brand-600);
+
+  /* === BORDER RADIUS === */
+  /* Pill nav + 24px hero card => generous. lg=16px, xl=22px, 2xl=29px */
+  --radius: 1rem;
+
+  /* === CHART COLORS === */
+  /* Five separated hues — orange 38, blue 259, green 143, violet 295,
+     grey. Amber is deliberately absent: it sits too close to the brand. */
+  --chart-1: var(--brand-500);
+  --chart-2: oklch(0.5531 0.1637 258.81);
+  --chart-3: oklch(0.6812 0.1703 142.62);
+  --chart-4: oklch(0.55 0.19 295);
+  --chart-5: var(--ink-600);
+
+  /* === SIDEBAR === */
+  --sidebar: var(--ink-50);
+  --sidebar-foreground: oklch(0.1776 0 0);
+  --sidebar-primary: var(--brand-600);
+  --sidebar-primary-foreground: oklch(0.997 0 0);
+  --sidebar-accent: var(--ink-100);
+  --sidebar-accent-foreground: oklch(0.1776 0 0);
+  --sidebar-border: var(--ink-200);
+  --sidebar-ring: var(--brand-600);
+
+  /* === CUSTOM SEMANTIC COLORS === */
+  --success: oklch(0.6812 0.1703 142.62); /* #4fb24a — sampled */
+  --success-foreground: oklch(0.1776 0 0); /* 7.01:1 */
+  /* Pushed yellower (hue 85) to stay legible next to the brand orange */
+  --warning: oklch(0.78 0.155 85); /* #e4ae1a */
+  --warning-foreground: oklch(0.1776 0 0); /* 9.32:1 */
+  --info: oklch(0.5531 0.1637 258.81);
+  --info-foreground: oklch(0.997 0 0); /* 4.84:1 */
+
+  /* === ELEVATION === */
+  /* Near-flat surfaces; one soft lift for the floating CTA. */
+  --shadow-token-xs: 0 1px 2px 0 oklch(0.1776 0 0 / 6%);
+  --shadow-token-sm: 0 1px 3px 0 oklch(0.1776 0 0 / 8%), 0 1px 2px -1px oklch(0.1776 0 0 / 6%);
+  --shadow-token-md: 0 4px 12px -2px oklch(0.1776 0 0 / 10%);
+  --shadow-token-lg: 0 12px 32px -8px oklch(0.1776 0 0 / 16%);
+}
+
+.dark {
+  /* The reference canvas. Dark is the brand's primary state. */
+  --background: oklch(0.1776 0 0); /* #111111 */
+  --foreground: oklch(0.997 0 0);
+
+  --card: oklch(0.2264 0 0); /* #1c1c1c */
+  --card-foreground: oklch(0.997 0 0);
+
+  --popover: oklch(0.2768 0 0); /* #282828 — the nav pill */
+  --popover-foreground: oklch(0.997 0 0);
+
+  /* On #111111 the full-strength orange is legible with ink type */
+  --primary: var(--brand-500);
+  --primary-foreground: oklch(0.1776 0 0); /* 5.78:1 */
+
+  --secondary: oklch(0.2768 0 0);
+  --secondary-foreground: oklch(0.997 0 0);
+
+  --muted: oklch(0.2768 0 0);
+  --muted-foreground: var(--ink-400); /* #b5b5b5 — 9.21:1 */
+
+  --accent: oklch(0.329 0 0); /* #353535 */
+  --accent-foreground: oklch(0.997 0 0);
+
+  /* Lifted so it stays legible as text on #111111 — 7.10:1 */
+  --destructive: oklch(0.72 0.16 25);
+  --destructive-foreground: oklch(0.1776 0 0);
+
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 18%);
+  --ring: var(--brand-500);
+
+  --chart-1: var(--brand-500);
+  --chart-2: oklch(0.7274 0.107 259.2);
+  --chart-3: oklch(0.7659 0.1362 143.04);
+  --chart-4: oklch(0.72 0.15 295);
+  --chart-5: var(--ink-400);
+
+  --sidebar: oklch(0.2264 0 0);
+  --sidebar-foreground: oklch(0.997 0 0);
+  --sidebar-primary: var(--brand-500);
+  --sidebar-primary-foreground: oklch(0.1776 0 0);
+  --sidebar-accent: oklch(0.2768 0 0);
+  --sidebar-accent-foreground: oklch(0.997 0 0);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: var(--brand-500);
+
+  /* Lightened so they stay legible against the near-black canvas */
+  --success: oklch(0.7659 0.1362 143.04);
+  --success-foreground: oklch(0.1776 0 0); /* 9.43:1 */
+  --warning: oklch(0.845 0.15 85); /* #f9c345 */
+  --warning-foreground: oklch(0.1776 0 0); /* 11.62:1 */
+  --info: oklch(0.7274 0.107 259.2);
+  --info-foreground: oklch(0.1776 0 0); /* 7.8:1 */
+
+  --shadow-token-xs: 0 1px 2px 0 oklch(0 0 0 / 40%);
+  --shadow-token-sm: 0 1px 3px 0 oklch(0 0 0 / 50%);
+  --shadow-token-md: 0 4px 12px -2px oklch(0 0 0 / 55%);
+  --shadow-token-lg: 0 12px 32px -8px oklch(0 0 0 / 65%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-bone: var(--bone);
+
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+
+  --color-ink-50: var(--ink-50);
+  --color-ink-100: var(--ink-100);
+  --color-ink-200: var(--ink-200);
+  --color-ink-300: var(--ink-300);
+  --color-ink-400: var(--ink-400);
+  --color-ink-500: var(--ink-500);
+  --color-ink-600: var(--ink-600);
+  --color-ink-700: var(--ink-700);
+  --color-ink-800: var(--ink-800);
+  --color-ink-900: var(--ink-900);
+
+  /* Figtree carries the geometric, low-contrast character of the
+     Cymatica logotype; literal names — @theme inline resolves at
+     parse time and cannot read next/font's runtime variables. */
+  --font-sans: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --shadow-xs: var(--shadow-token-xs);
+  --shadow-sm: var(--shadow-token-sm);
+  --shadow-md: var(--shadow-token-md);
+  --shadow-lg: var(--shadow-token-lg);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Display type is set tight and optically balanced, as in the refs */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
 }

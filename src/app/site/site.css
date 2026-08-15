@@ -1,0 +1,108 @@
+/* ============================================================
+   CSS exclusivo do site institucional.
+   Carregado só pelo layout de /site — globals.css pertence ao
+   agente que constrói o design system e não é tocado aqui.
+   ============================================================ */
+
+/* --- Escala de display fluida ---------------------------------
+   Tamanhos em clamp() para que o salto entre breakpoints não
+   apareça. Tracking fecha conforme o corpo cresce. */
+.site-display {
+  font-size: clamp(3rem, 11vw, 11rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+}
+
+.site-h2 {
+  font-size: clamp(2.25rem, 5.5vw, 5rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+}
+
+.site-h3 {
+  font-size: clamp(1.5rem, 2.6vw, 2.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  font-weight: 500;
+}
+
+.site-lead {
+  font-size: clamp(1.125rem, 1.7vw, 1.5rem);
+  line-height: 1.45;
+  letter-spacing: -0.012em;
+}
+
+/* Etiqueta de seção: mono, caixa alta, muito tracking. */
+.site-label {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* --- Medida de leitura ---------------------------------------
+   Linha longa demais é o erro mais comum em site de estúdio. */
+.site-measure {
+  max-width: 62ch;
+}
+
+/* --- Estrutura do ScrollSmoother -----------------------------
+   O plugin exige wrapper + content. Enquanto o JS não assume, o
+   layout precisa se comportar como uma página normal. */
+#smooth-wrapper {
+  overflow: hidden;
+}
+
+/* --- Revelação por scroll ------------------------------------
+   Estado inicial em CSS para que não haja flash de conteúdo já
+   posicionado antes do GSAP assumir. O `.is-ready` é aplicado
+   pelo provider assim que ele decide se vai animar ou não. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+[data-reveal-ready] [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Sem JS, nada fica escondido. */
+.no-js [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- Régua de interferência ----------------------------------
+   Divisor derivado do conceito cimático: uma onda estacionária
+   desenhada em gradiente, com os nós escurecendo. */
+.site-rule {
+  height: 1px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-border) 0,
+    var(--color-border) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+}
+
+/* --- Grade de fundo ------------------------------------------
+   Textura técnica discreta, no espírito de instrumento de
+   precisão. Fica muito abaixo do limiar de ruído visual. */
+.site-grid-bg {
+  background-image:
+    linear-gradient(to right, var(--color-border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
+  background-size: 80px 80px;
+  opacity: 0.35;
+}
