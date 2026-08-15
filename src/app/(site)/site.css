@@ -83,6 +83,14 @@
     color 400ms ease;
 }
 
+/* Duas ilhas claras seguidas formam um bloco visual só. Mantendo o
+   padding das duas, o vão entre elas fica do dobro do tamanho de
+   qualquer outro respiro da página e o corte some: as seções passam
+   a ler como uma seção mal espaçada. A de baixo abre mão do topo. */
+.light + .light {
+  padding-top: 0;
+}
+
 /* --- Régua de interferência ---------------------------------- */
 .site-rule {
   height: 1px;

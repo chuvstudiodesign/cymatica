@@ -31,14 +31,16 @@ gsap.registerPlugin(ScrollTrigger)
  */
 export function Method() {
   const outerRef = useRef<HTMLDivElement>(null)
+  const stickyRef = useRef<HTMLDivElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLOListElement>(null)
 
   useEffect(() => {
     const outer = outerRef.current
+    const sticky = stickyRef.current
     const viewport = viewportRef.current
     const track = trackRef.current
-    if (!outer || !viewport || !track) return
+    if (!outer || !sticky || !viewport || !track) return
 
     const mm = gsap.matchMedia()
 
@@ -51,10 +53,23 @@ export function Method() {
         const distance = () =>
           Math.max(0, track.offsetWidth - viewport.clientWidth)
 
-        const aplicarAltura = () =>
+        /**
+         * A âncora tem a altura do próprio trilho, não a da janela.
+         *
+         * Com `100svh`, um trilho de ~400px ficava centralizado num bloco de
+         * ~900px e sobravam centenas de pixels vazios de cada lado, somados
+         * ainda ao padding da seção. Medindo o conteúdo, o vão desaparece.
+         */
+        const medir = () => {
+          const alturaConteudo = sticky.offsetHeight
+          const topo = Math.max(24, (window.innerHeight - alturaConteudo) / 2)
+          outer.style.setProperty("--conteudo", `${alturaConteudo}px`)
+          outer.style.setProperty("--topo", `${topo}px`)
           outer.style.setProperty("--trilho", `${distance()}px`)
+          return { alturaConteudo, topo }
+        }
 
-        aplicarAltura()
+        const { alturaConteudo, topo } = medir()
         gsap.set(viewport, { overflow: "hidden", scrollSnapType: "none" })
 
         const tween = gsap.to(track, {
@@ -62,17 +77,22 @@ export function Method() {
           ease: "none",
           scrollTrigger: {
             trigger: outer,
-            start: "top top",
-            end: "bottom bottom",
+            // Casa exatamente com o intervalo em que o sticky fica preso:
+            // começa quando o topo do bloco alcança a linha de fixação e
+            // termina quando a base o ultrapassa pela altura do conteúdo.
+            start: () => `top top+=${topo}`,
+            end: () => `bottom top+=${topo + alturaConteudo}`,
             scrub: 0.8,
             invalidateOnRefresh: true,
-            onRefresh: aplicarAltura,
+            onRefresh: medir,
           },
         })
 
         return () => {
           tween.scrollTrigger?.kill()
           tween.kill()
+          outer.style.removeProperty("--conteudo")
+          outer.style.removeProperty("--topo")
           outer.style.removeProperty("--trilho")
         }
       }
@@ -102,13 +122,13 @@ export function Method() {
         </div>
       </Container>
 
-      {/* A altura extra é o curso da âncora: quanto mais largo o trilho, mais
-          scroll a seção segura antes de soltar. */}
+      {/* A altura é o conteúdo mais o curso da âncora: quanto mais largo o
+          trilho, mais scroll a seção segura antes de soltar. */}
       <div
         ref={outerRef}
-        className="relative mt-20 lg:h-[calc(100svh+var(--trilho,0px))]"
+        className="relative mt-20 lg:h-[calc(var(--conteudo,0px)+var(--trilho,0px))]"
       >
-        <div className="lg:sticky lg:top-0 lg:flex lg:h-[100svh] lg:items-center">
+        <div ref={stickyRef} className="lg:sticky lg:top-[var(--topo,0px)]">
           {/* Contêiner de scroll e trilho separados: um só elemento acumulando
               as duas funções faz o navegador ignorar o padding final. */}
           <div
