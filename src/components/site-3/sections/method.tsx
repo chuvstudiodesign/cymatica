@@ -14,80 +14,75 @@ gsap.registerPlugin(ScrollTrigger)
  * O método em cinco etapas, percorridas na horizontal enquanto a seção fica
  * ancorada.
  *
- * A primeira versão travava e saltava da etapa 1 para a 5. Três causas somadas:
+ * A âncora é `position: sticky` do CSS, e não o `pin` do ScrollTrigger.
  *
- *   1. animava `scrollLeft`, uma propriedade de scroll nativo;
- *   2. o `normalizeScroll` do ScrollSmoother sequestra a roda do mouse e
- *      quebra qualquer contêiner de scroll aninhado;
- *   3. o `snap-mandatory` puxava o trilho de volta no meio do tween.
+ * O `pin` envolve o elemento num `pin-spacer` que ele insere no DOM, e isso
+ * quebra o React: ao navegar, ele tenta remover a section do pai original, que
+ * já não é mais o pai, e falha com "NotFoundError: The object can not be found
+ * here". Sincronizar melhor a limpeza só mudava o momento do problema.
  *
- * Agora o trilho é movido por `x` — transform puro, resolvido na GPU, sem
- * disputa com o scroll nativo. O `normalizeScroll` foi desligado no provider e
- * o snap só existe no modo sem ancoragem.
+ * Com sticky, o ScrollTrigger não encosta na estrutura da página: apenas lê a
+ * posição do scroll e escreve `transform` no trilho. Nada é inserido, nada é
+ * movido, e não há o que dessincronizar com o React.
  *
- * Sem JS, em telas estreitas ou com movimento reduzido, o trilho continua um
- * carrossel rolável de verdade — nada depende da animação para funcionar.
+ * A altura extra que sustenta a âncora vem de `--trilho`, variável CSS escrita
+ * pelo efeito. Sem JS, em tela estreita ou com movimento reduzido, ela fica
+ * zerada e a seção vira um carrossel rolável comum.
  */
 export function Method() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const outerRef = useRef<HTMLDivElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLOListElement>(null)
 
   useEffect(() => {
-    const section = sectionRef.current
+    const outer = outerRef.current
     const viewport = viewportRef.current
     const track = trackRef.current
-    if (!section || !viewport || !track) return
+    if (!outer || !viewport || !track) return
 
-    // `gsap.matchMedia()` e não `ScrollTrigger.matchMedia()`: o segundo está
-    // descontinuado desde o GSAP 3.11 e não participa do ciclo de limpeza.
-    // Como `pin: true` envolve a section num `pin-spacer`, um trigger que não
-    // é desmontado deixa a section pendurada dentro do spacer. O React então
-    // tenta removê-la do pai original na navegação e falha com
-    // "NotFoundError: The object can not be found here".
     const mm = gsap.matchMedia()
 
     mm.add(
       "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
       () => {
-          // `offsetWidth` do trilho, e não `scrollWidth` do contêiner: em um
-          // contêiner de scroll flex, os navegadores descartam o padding final
-          // ao calcular `scrollWidth`, e a distância saía curta pela largura
-          // exata da margem lateral. Era isso que deixava o último cartão
-          // parando colado na borda direita.
-          const distance = () =>
-            Math.max(0, track.offsetWidth - viewport.clientWidth)
-          if (distance() === 0) return
+        // `offsetWidth` do trilho, e não `scrollWidth` do contêiner: num
+        // contêiner de scroll flex, os navegadores descartam o padding final ao
+        // calcular `scrollWidth`, e o último cartão parava colado na borda.
+        const distance = () =>
+          Math.max(0, track.offsetWidth - viewport.clientWidth)
 
-          // Com o trilho movido por transform, o scroll nativo do contêiner
-          // sairia de sincronia. Os dois ficam desligados durante a âncora.
-          gsap.set(viewport, { overflow: "hidden", scrollSnapType: "none" })
+        const aplicarAltura = () =>
+          outer.style.setProperty("--trilho", `${distance()}px`)
 
-          gsap.to(track, {
-            x: () => -distance(),
-            ease: "none",
-            scrollTrigger: {
-              trigger: section,
-              start: "top top",
-              end: () => `+=${distance()}`,
-              pin: true,
-              scrub: 0.8,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-            },
-          })
+        aplicarAltura()
+        gsap.set(viewport, { overflow: "hidden", scrollSnapType: "none" })
+
+        const tween = gsap.to(track, {
+          x: () => -distance(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: outer,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.8,
+            invalidateOnRefresh: true,
+            onRefresh: aplicarAltura,
+          },
+        })
+
+        return () => {
+          tween.scrollTrigger?.kill()
+          tween.kill()
+          outer.style.removeProperty("--trilho")
+        }
       }
     )
 
-    // Devolve a section ao pai original antes de o React desmontá-la.
     return () => mm.revert()
   }, [])
 
   return (
-    <section
-      ref={sectionRef}
-      className="overflow-hidden border-t border-border py-28 md:py-40"
-    >
+    <section className="border-t border-border py-28 md:py-40">
       <Container>
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-4">
@@ -107,44 +102,49 @@ export function Method() {
         </div>
       </Container>
 
-      {/* Contêiner de scroll e trilho são elementos separados: um só elemento
-          acumulando as duas funções faz o navegador ignorar o padding final na
-          medição, e o último cartão perde a margem direita. */}
+      {/* A altura extra é o curso da âncora: quanto mais largo o trilho, mais
+          scroll a seção segura antes de soltar. */}
       <div
-        ref={viewportRef}
-        className="mt-20 snap-x snap-mandatory overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        ref={outerRef}
+        className="relative mt-20 lg:h-[calc(100svh+var(--trilho,0px))]"
       >
-        <ol
-          ref={trackRef}
-          className="flex w-max gap-6 px-6 md:px-12 lg:px-20"
-        >
-          {method.steps.map((step, i) => (
-          <li
-            key={step.number}
-            className="group/step w-[min(84vw,26rem)] shrink-0 snap-start rounded-2xl border border-border bg-card p-8 transition-colors duration-500 hover:border-primary/40 md:p-10"
+        <div className="lg:sticky lg:top-0 lg:flex lg:h-[100svh] lg:items-center">
+          {/* Contêiner de scroll e trilho separados: um só elemento acumulando
+              as duas funções faz o navegador ignorar o padding final. */}
+          <div
+            ref={viewportRef}
+            className="w-full snap-x snap-mandatory overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
-            <div className="flex items-baseline justify-between gap-4">
-              <span className="site-label text-primary">{step.number}</span>
-              <span className="site-label text-muted-foreground">
-                {step.duration}
-              </span>
-            </div>
+            <ol ref={trackRef} className="flex w-max gap-6 px-6 md:px-12 lg:px-20">
+              {method.steps.map((step, i) => (
+                <li
+                  key={step.number}
+                  className="group/step w-[min(84vw,26rem)] shrink-0 snap-start rounded-2xl border border-border bg-card p-8 transition-colors duration-500 hover:border-primary/40 md:p-10"
+                >
+                  <div className="flex items-baseline justify-between gap-4">
+                    <span className="site-label text-primary">{step.number}</span>
+                    <span className="site-label text-muted-foreground">
+                      {step.duration}
+                    </span>
+                  </div>
 
-            {/* Barra de progresso da etapa: preenche conforme avança na série. */}
-            <div className="mt-8 h-px w-full bg-border">
-              <div
-                className="h-px bg-primary transition-[width] duration-700"
-                style={{ width: `${((i + 1) / method.steps.length) * 100}%` }}
-              />
-            </div>
+                  {/* Barra de progresso: preenche conforme avança na série. */}
+                  <div className="mt-8 h-px w-full bg-border">
+                    <div
+                      className="h-px bg-primary transition-[width] duration-700"
+                      style={{ width: `${((i + 1) / method.steps.length) * 100}%` }}
+                    />
+                  </div>
 
-            <h3 className="site-h3 mt-10">{step.name}</h3>
-            <p className="mt-5 text-pretty text-muted-foreground">
-              {step.description}
-            </p>
-          </li>
-          ))}
-        </ol>
+                  <h3 className="site-h3 mt-10">{step.name}</h3>
+                  <p className="mt-5 text-pretty text-muted-foreground">
+                    {step.description}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
       </div>
     </section>
   )

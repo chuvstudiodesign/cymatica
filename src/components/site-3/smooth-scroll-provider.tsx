@@ -37,7 +37,11 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
         wrapper: "#smooth-wrapper",
         content: "#smooth-content",
         smooth: 1.15,
-        effects: true,
+        // Desligado: `effects` faz o ScrollSmoother envolver elementos com
+        // `data-speed` para aplicar parallax sem afetar o layout. Nenhum
+        // elemento usa isso hoje, e manter ligada uma API que insere nós no
+        // DOM só deixa aberta a porta para o React perder a referência deles.
+        effects: false,
         smoothTouch: false,
       })
 

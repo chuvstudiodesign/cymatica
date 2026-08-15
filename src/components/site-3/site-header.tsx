@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { nav, BASE, whatsappLink } from "@/lib/site-3/content"
+import { nav, whatsappLink } from "@/lib/site-3/content"
 import { CymaticaLockup, CymaticaMark } from "@/components/site/cymatica-mark"
 
 /** Mensagem que já vai preenchida ao abrir a conversa. */
