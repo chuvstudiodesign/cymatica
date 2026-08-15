@@ -19,6 +19,15 @@ export const whatsapp = {
   display: "+44 7424 714087",
 } as const
 
+/**
+ * Os dois canais do estúdio. Não há e-mail publicado: o contato acontece por
+ * WhatsApp, que é para onde os formulários também apontam.
+ */
+export const instagram = {
+  handle: "@cymatica.pro",
+  url: "https://instagram.com/cymatica.pro",
+} as const
+
 export function whatsappLink(message: string) {
   return `https://wa.me/${whatsapp.number}?text=${encodeURIComponent(message)}`
 }

@@ -2,7 +2,7 @@ import Link from "next/link"
 
 import { Container } from "./primitives"
 import { CymaticaMark } from "@/components/site/cymatica-mark"
-import { footer, studio } from "@/lib/site-3/content"
+import { footer, instagram, whatsapp, whatsappLink } from "@/lib/site-3/content"
 
 export function SiteFooter() {
   return (
@@ -38,13 +38,24 @@ export function SiteFooter() {
               <ul className="mt-6 flex flex-col gap-3 text-sm">
                 <li>
                   <a
-                    href={`mailto:${studio.email}`}
+                    href={whatsappLink("Olá! Vim pelo site da Cymatica.")}
+                    target="_blank"
+                    rel="noreferrer"
                     className="text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
                   >
-                    {studio.email}
+                    WhatsApp {whatsapp.display}
                   </a>
                 </li>
-                <li className="text-muted-foreground">{studio.instagram}</li>
+                <li>
+                  <a
+                    href={instagram.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+                  >
+                    Instagram {instagram.handle}
+                  </a>
+                </li>
               </ul>
             </div>
           </div>

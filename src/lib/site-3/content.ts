@@ -19,6 +19,7 @@ export {
   closingCta,
   whatsapp,
   whatsappLink,
+  instagram,
 } from "./copy"
 
 export { projects, drawerProjects, allProjects, type Project } from "./projects"

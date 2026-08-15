@@ -4,8 +4,8 @@ import { ArrowUpRight } from "lucide-react"
 
 import { Container, SectionLabel } from "@/components/site-3/primitives"
 import { AnimatedHeading } from "@/components/site-3/animated-heading"
-import { ContactForm } from "@/components/site/contact-form"
-import { contact, studio, BASE } from "@/lib/site-3/content"
+import { ContactForm } from "@/components/site-3/contact-form"
+import { contact, studio, instagram, whatsapp, whatsappLink, BASE } from "@/lib/site-3/content"
 
 export const metadata: Metadata = {
   title: "Contato",
@@ -42,13 +42,28 @@ export default function ContatoPage() {
 
             <dl className="mt-20 flex flex-col gap-8">
               <div>
-                <dt className="site-label text-muted-foreground">Email</dt>
+                <dt className="site-label text-muted-foreground">WhatsApp</dt>
                 <dd className="mt-3">
                   <a
-                    href={`mailto:${studio.email}`}
+                    href={whatsappLink("Olá! Vim pelo site da Cymatica.")}
+                    target="_blank"
+                    rel="noreferrer"
                     className="underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
                   >
-                    {studio.email}
+                    {whatsapp.display}
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="site-label text-muted-foreground">Instagram</dt>
+                <dd className="mt-3">
+                  <a
+                    href={instagram.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
+                  >
+                    {instagram.handle}
                   </a>
                 </dd>
               </div>

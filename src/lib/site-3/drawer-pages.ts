@@ -1,26 +1,21 @@
 /**
  * Páginas das apresentações da gaveta.
  *
- * Gerado por `scripts/extract_gaveta.py`, no mesmo padrão dos projetos
- * principais: primeira e última página descartadas (logo do estúdio anterior),
- * origem a 4000px do vetor e WebP q95.
+ * Mesmo padrão dos projetos principais: primeira e última página do PDF
+ * descartadas, origem a 4000px do vetor e WebP q95.
  *
- * A capa foi escolhida por análise da própria apresentação, e não indicada à
- * mão. O critério é a contagem de cores distintas: mockup fotográfico tem
- * milhares, página de design plano tem dezenas. Isso separa aplicação real de
- * página de paleta, que um critério de contraste premiava por engano.
- *
- * Três capas foram escolhidas manualmente, onde a heurística caiu numa lâmina
- * de fundo chapado com um detalhe colorido no canto: cozinha-da-mika, recria e
- * technpol. Em `recria` o recorte também é deslocado, porque a modelo fica a
- * um terço da largura e o corte centralizado pegava só a forma ao lado dela.
+ * A capa de cada projeto foi indicada pelo estúdio, na numeração do site (a
+ * sequência já sem as páginas descartadas), e o recorte é 16:9. Os principais
+ * usam retrato 9:16 porque vão numa grade de três; estes vão numa grade de
+ * dois lado a lado, onde o horizontal aproveita muito melhor a lâmina, que já
+ * nasce entre 2,05:1 e 2,36:1.
  */
 
 import type { ProjectPages } from "./project-pages"
 
 export const drawerPages: Record<string, ProjectPages> = {
   "minha-casa-solar": {
-    coverImage: { src: "/projects-3/minha-casa-solar/cover.webp", width: 955, height: 1697 },
+    coverImage: { src: "/projects-3/minha-casa-solar/cover.webp", width: 3017, height: 1697 },
     pages: [
       { src: "/projects-3/minha-casa-solar/01.webp", width: 4000, height: 1697 },
       { src: "/projects-3/minha-casa-solar/02.webp", width: 4000, height: 1697 },
@@ -60,7 +55,7 @@ export const drawerPages: Record<string, ProjectPages> = {
     ],
   },
   "technpol": {
-    coverImage: { src: "/projects-3/technpol/cover.webp", width: 954, height: 1696 },
+    coverImage: { src: "/projects-3/technpol/cover.webp", width: 3015, height: 1696 },
     pages: [
       { src: "/projects-3/technpol/01.webp", width: 4000, height: 1696 },
       { src: "/projects-3/technpol/02.webp", width: 4000, height: 1696 },
@@ -108,7 +103,7 @@ export const drawerPages: Record<string, ProjectPages> = {
     ],
   },
   "principe-de-gales": {
-    coverImage: { src: "/projects-3/principe-de-gales/cover.webp", width: 954, height: 1696 },
+    coverImage: { src: "/projects-3/principe-de-gales/cover.webp", width: 3015, height: 1696 },
     pages: [
       { src: "/projects-3/principe-de-gales/01.webp", width: 4000, height: 1696 },
       { src: "/projects-3/principe-de-gales/02.webp", width: 4000, height: 1696 },
@@ -158,7 +153,7 @@ export const drawerPages: Record<string, ProjectPages> = {
     ],
   },
   "battist": {
-    coverImage: { src: "/projects-3/battist/cover.webp", width: 954, height: 1696 },
+    coverImage: { src: "/projects-3/battist/cover.webp", width: 3015, height: 1696 },
     pages: [
       { src: "/projects-3/battist/01.webp", width: 4000, height: 1696 },
       { src: "/projects-3/battist/02.webp", width: 4000, height: 1696 },
@@ -215,7 +210,7 @@ export const drawerPages: Record<string, ProjectPages> = {
     ],
   },
   "recria": {
-    coverImage: { src: "/projects-3/recria/cover.webp", width: 955, height: 1697 },
+    coverImage: { src: "/projects-3/recria/cover.webp", width: 3017, height: 1697 },
     pages: [
       { src: "/projects-3/recria/01.webp", width: 4000, height: 1697 },
       { src: "/projects-3/recria/02.webp", width: 4000, height: 1697 },
@@ -249,7 +244,7 @@ export const drawerPages: Record<string, ProjectPages> = {
     ],
   },
   "enort": {
-    coverImage: { src: "/projects-3/enort/cover.webp", width: 1096, height: 1948 },
+    coverImage: { src: "/projects-3/enort/cover.webp", width: 3463, height: 1948 },
     pages: [
       { src: "/projects-3/enort/01.webp", width: 4000, height: 1948 },
       { src: "/projects-3/enort/02.webp", width: 4000, height: 1948 },
@@ -288,25 +283,8 @@ export const drawerPages: Record<string, ProjectPages> = {
       { src: "/projects-3/enort/35.webp", width: 4000, height: 1948 },
     ],
   },
-  "cr-contabilidade": {
-    coverImage: { src: "/projects-3/cr-contabilidade/cover.webp", width: 1689, height: 3003 },
-    pages: [
-      { src: "/projects-3/cr-contabilidade/01.webp", width: 4000, height: 1948 },
-      { src: "/projects-3/cr-contabilidade/02.webp", width: 4000, height: 1948 },
-      { src: "/projects-3/cr-contabilidade/03.webp", width: 4000, height: 1948 },
-      { src: "/projects-3/cr-contabilidade/04.webp", width: 4000, height: 1948 },
-      { src: "/projects-3/cr-contabilidade/05.webp", width: 4000, height: 1948 },
-      { src: "/projects-3/cr-contabilidade/06.webp", width: 4000, height: 1948 },
-      { src: "/projects-3/cr-contabilidade/07.webp", width: 4000, height: 1948 },
-      { src: "/projects-3/cr-contabilidade/08.webp", width: 4000, height: 1948 },
-      { src: "/projects-3/cr-contabilidade/09.webp", width: 4000, height: 1948 },
-      { src: "/projects-3/cr-contabilidade/10.webp", width: 4000, height: 1948 },
-      { src: "/projects-3/cr-contabilidade/11.webp", width: 4000, height: 3003 },
-      { src: "/projects-3/cr-contabilidade/12.webp", width: 4000, height: 1948 },
-    ],
-  },
   "diiverso": {
-    coverImage: { src: "/projects-3/diiverso/cover.webp", width: 1096, height: 1948 },
+    coverImage: { src: "/projects-3/diiverso/cover.webp", width: 3463, height: 1948 },
     pages: [
       { src: "/projects-3/diiverso/01.webp", width: 4000, height: 1948 },
       { src: "/projects-3/diiverso/02.webp", width: 4000, height: 1948 },
@@ -356,7 +334,7 @@ export const drawerPages: Record<string, ProjectPages> = {
     ],
   },
   "aline-phil": {
-    coverImage: { src: "/projects-3/aline-phil/cover.webp", width: 954, height: 1696 },
+    coverImage: { src: "/projects-3/aline-phil/cover.webp", width: 3015, height: 1696 },
     pages: [
       { src: "/projects-3/aline-phil/01.webp", width: 4000, height: 1696 },
       { src: "/projects-3/aline-phil/02.webp", width: 4000, height: 1696 },
@@ -389,7 +367,7 @@ export const drawerPages: Record<string, ProjectPages> = {
     ],
   },
   "onda-longboard": {
-    coverImage: { src: "/projects-3/onda-longboard/cover.webp", width: 1096, height: 1948 },
+    coverImage: { src: "/projects-3/onda-longboard/cover.webp", width: 3463, height: 1948 },
     pages: [
       { src: "/projects-3/onda-longboard/01.webp", width: 4000, height: 1948 },
       { src: "/projects-3/onda-longboard/02.webp", width: 4000, height: 1948 },
@@ -424,7 +402,7 @@ export const drawerPages: Record<string, ProjectPages> = {
     ],
   },
   "california-br": {
-    coverImage: { src: "/projects-3/california-br/cover.webp", width: 1096, height: 1948 },
+    coverImage: { src: "/projects-3/california-br/cover.webp", width: 3463, height: 1948 },
     pages: [
       { src: "/projects-3/california-br/01.webp", width: 4000, height: 1948 },
       { src: "/projects-3/california-br/02.webp", width: 4000, height: 1948 },
@@ -451,7 +429,7 @@ export const drawerPages: Record<string, ProjectPages> = {
     ],
   },
   "cozinha-da-mika": {
-    coverImage: { src: "/projects-3/cozinha-da-mika/cover.webp", width: 1096, height: 1948 },
+    coverImage: { src: "/projects-3/cozinha-da-mika/cover.webp", width: 3463, height: 1948 },
     pages: [
       { src: "/projects-3/cozinha-da-mika/01.webp", width: 4000, height: 1948 },
       { src: "/projects-3/cozinha-da-mika/02.webp", width: 4000, height: 1948 },
@@ -473,7 +451,7 @@ export const drawerPages: Record<string, ProjectPages> = {
     ],
   },
   "quallium": {
-    coverImage: { src: "/projects-3/quallium/cover.webp", width: 1276, height: 2269 },
+    coverImage: { src: "/projects-3/quallium/cover.webp", width: 4000, height: 2250 },
     pages: [
       { src: "/projects-3/quallium/01.webp", width: 4000, height: 2269 },
       { src: "/projects-3/quallium/02.webp", width: 4000, height: 2269 },

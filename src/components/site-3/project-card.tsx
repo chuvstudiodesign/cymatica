@@ -8,6 +8,12 @@ type ProjectCardProps = {
   project: Project
   sizes?: string
   priority?: boolean
+  /**
+   * Retrato para os principais, que vão numa grade de três; paisagem para a
+   * gaveta, numa grade de dois. A capa é gerada já no formato certo, então
+   * aqui o recorte é mínimo.
+   */
+  orientation?: "portrait" | "landscape"
   /** Deslocamento em parallax, lido pelo ScrollSmoother via `data-speed`. */
   speed?: number
   className?: string
@@ -28,6 +34,7 @@ export function ProjectCard({
   project,
   sizes = "(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw",
   priority = false,
+  orientation = "portrait",
   speed,
   className,
 }: ProjectCardProps) {
@@ -40,7 +47,12 @@ export function ProjectCard({
         className
       )}
     >
-      <div className="relative aspect-9/16 overflow-hidden rounded-2xl bg-card">
+      <div
+        className={cn(
+          "relative overflow-hidden rounded-2xl bg-card",
+          orientation === "landscape" ? "aspect-16/9" : "aspect-9/16"
+        )}
+      >
         <Image
           src={project.cover.src}
           alt={`${project.client}: ${project.summary}`}

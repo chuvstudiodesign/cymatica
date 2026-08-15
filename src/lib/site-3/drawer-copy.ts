@@ -95,18 +95,6 @@ export const drawerCopy: DrawerCopy[] = [
     services: ["Design de marca", "Type design"],
   },
   {
-    slug: "cr-contabilidade",
-    client: "CR Contabilidade",
-    sector: "Contabilidade",
-    summary: "A sigla construída com os instrumentos da profissão.",
-    challenge:
-      "Fazer as duas letras da sigla dizerem o que a empresa faz, sem depender de um ícone genérico ao lado.",
-    approach:
-      "Dois elementos visuais do próprio ofício foram levados para dentro do desenho das letras: o gráfico de rosca e a moeda. O simbolismo passa a morar na sigla, e não em um adereço.",
-    outcome: "Uma sigla que se explica sozinha.",
-    services: ["Design de marca"],
-  },
-  {
     slug: "diiverso",
     client: "Diiverso",
     sector: "E-commerce",

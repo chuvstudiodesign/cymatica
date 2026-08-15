@@ -36,9 +36,19 @@ export function MoreProjects({ projects }: { projects: Project[] }) {
   return (
     <div className="mt-24">
       <p className="site-label text-muted-foreground">Também fizemos</p>
-      <div className="mt-12 grid gap-x-6 gap-y-20 sm:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project) => (
-          <ProjectCard key={project.slug} project={project} />
+
+      {/* Grade de dois, com as capas em paisagem. As lâminas de apresentação
+          já nascem largas, então o horizontal aproveita a composição inteira
+          em vez de recortar uma faixa central. */}
+      <div className="mt-12 grid gap-x-6 gap-y-16 md:grid-cols-2">
+        {projects.map((project, i) => (
+          <ProjectCard
+            key={project.slug}
+            project={project}
+            orientation="landscape"
+            sizes="(min-width: 768px) 46vw, 92vw"
+            priority={i < 2}
+          />
         ))}
       </div>
     </div>

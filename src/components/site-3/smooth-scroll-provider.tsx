@@ -32,6 +32,13 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       return
     }
 
+    // Ao trocar de rota, o navegador mantém a posição de scroll e o
+    // ScrollSmoother é recriado sobre ela. Como a página nova quase sempre tem
+    // altura diferente, aquela posição cai em qualquer lugar do documento, em
+    // geral perto do rodapé. Zerar antes de criar o smoother devolve a leitura
+    // ao topo, que é o que se espera ao abrir outra página.
+    window.scrollTo(0, 0)
+
     const ctx = gsap.context(() => {
       smootherRef.current = ScrollSmoother.create({
         wrapper: "#smooth-wrapper",
@@ -66,6 +73,9 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
         const delay = Number(el.dataset.revealDelay)
         if (delay) gsap.set(el, { transitionDelay: `${delay}s` })
       })
+
+      // O smoother guarda a própria posição, independente da janela.
+      smootherRef.current?.scrollTop(0)
 
       document.documentElement.setAttribute("data-reveal-ready", "")
       ScrollTrigger.refresh()
