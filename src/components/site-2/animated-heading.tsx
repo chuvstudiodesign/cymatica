@@ -11,23 +11,38 @@ gsap.registerPlugin(ScrollTrigger, SplitText)
 
 type AnimatedHeadingProps = {
   as?: "h1" | "h2" | "h3" | "p"
-  children: React.ReactNode
+  /** Texto puro. Ver a nota sobre `dangerouslySetInnerHTML` abaixo. */
+  children: string
   className?: string
   /** Atraso extra, para escalonar em relação a outros elementos da seção. */
   delay?: number
   stagger?: number
 }
 
+const escapar = (texto: string) =>
+  texto
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+
 /**
  * Título revelado linha a linha, subindo de trás de uma máscara.
  *
- * É o gesto que separa um site de estúdio de um site comum: em vez de o texto
- * aparecer por opacidade, cada linha emerge de baixo, como se estivesse
- * escondida atrás da própria caixa. O `mask: "lines"` do SplitText cria o
- * contêiner de recorte para isso.
+ * Em vez de o texto aparecer por opacidade, cada linha emerge de baixo, como
+ * se estivesse escondida atrás da própria caixa. O `mask: "lines"` do SplitText
+ * cria o contêiner de recorte para isso.
  *
- * O texto original permanece no DOM durante a divisão, então leitor de tela e
- * busca continuam vendo a frase inteira.
+ * Sobre o `dangerouslySetInnerHTML`: o SplitText reescreve os filhos do
+ * elemento, e ao desfazer recria os nós de texto do zero. O React continua
+ * guardando referência aos nós originais, que a essa altura estão órfãos, e
+ * quebra ao tentar removê-los na navegação com
+ * "NotFoundError: The object can not be found here".
+ *
+ * Marcar a subárvore como HTML bruto resolve na raiz: o React passa a tratá-la
+ * como opaca, nunca percorre os filhos e, ao desmontar, remove apenas o
+ * elemento externo, que é dele. O texto continua presente no HTML do servidor,
+ * então busca e leitor de tela não perdem nada. O conteúdo vem do arquivo de
+ * copy do próprio site e ainda assim é escapado.
  */
 export function AnimatedHeading({
   as: Tag = "h2",
@@ -48,47 +63,45 @@ export function AnimatedHeading({
     }
 
     let split: SplitText | null = null
-    const ctx = gsap.context(() => {})
+    let cancelled = false
 
     // A divisão em linhas depende da métrica final da fonte. Dividir antes de
     // a Figtree carregar produz quebras erradas que ficam congeladas.
-    const run = () => {
-      ctx.add(() => {
-        try {
-          split = SplitText.create(element, { type: "lines", mask: "lines" })
-          gsap.from(split.lines, {
-            yPercent: 115,
-            duration: 0.95,
-            ease: "expo.out",
-            stagger,
-            delay,
-            scrollTrigger: { trigger: element, start: "top 88%", once: true },
-          })
-        } catch {
-          // Título ilegível é pior que título sem animação.
-        } finally {
-          gsap.set(element, { opacity: 1 })
-        }
-      })
-    }
-
-    let cancelled = false
     document.fonts.ready.then(() => {
-      if (!cancelled) run()
+      if (cancelled || !ref.current) return
+      try {
+        split = SplitText.create(element, { type: "lines", mask: "lines" })
+        gsap.from(split.lines, {
+          yPercent: 115,
+          duration: 0.95,
+          ease: "expo.out",
+          stagger,
+          delay,
+          scrollTrigger: { trigger: element, start: "top 88%", once: true },
+        })
+      } catch {
+        // Título ilegível é pior que título sem animação.
+      } finally {
+        gsap.set(element, { opacity: 1 })
+      }
     })
 
     return () => {
       cancelled = true
-      ctx.revert()
+      // A ordem importa: desfazer a divisão devolve o elemento ao estado que o
+      // React conhece antes que ele seja desmontado.
       split?.revert()
+      ScrollTrigger.getAll()
+        .filter((t) => t.trigger === element)
+        .forEach((t) => t.kill())
     }
   }, [delay, stagger])
 
   return (
-    // Começa invisível para não haver salto entre o texto plano e as linhas já
-    // divididas; o CSS devolve a opacidade se o JS não rodar.
-    <Tag ref={ref} className={cn("opacity-0 [.no-js_&]:opacity-100", className)}>
-      {children}
-    </Tag>
+    <Tag
+      ref={ref}
+      className={cn("opacity-0 [.no-js_&]:opacity-100", className)}
+      dangerouslySetInnerHTML={{ __html: escapar(children) }}
+    />
   )
 }

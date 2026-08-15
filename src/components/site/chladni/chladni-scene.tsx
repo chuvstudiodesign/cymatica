@@ -95,16 +95,25 @@ function Plate({
     []
   )
 
+  // Escreve no material, não no objeto memoizado: o material é o sistema
+  // externo que de fato guarda o estado, e mutar a memo confundiria o React.
   useEffect(() => {
-    uniforms.uColorGrain.value.setRGB(...resolveTokenColor(grainToken))
-    uniforms.uColorNode.value.setRGB(...resolveTokenColor(nodeToken))
-    uniforms.uOpacity.value = grainOpacity
-    uniforms.uAccentGamma.value = accentGamma
-  }, [uniforms, grainToken, nodeToken, grainOpacity, accentGamma])
+    const u = materialRef.current?.uniforms
+    if (!u) return
+    u.uColorGrain.value.setRGB(...resolveTokenColor(grainToken))
+    u.uColorNode.value.setRGB(...resolveTokenColor(nodeToken))
+    u.uOpacity.value = grainOpacity
+    u.uAccentGamma.value = accentGamma
+  }, [grainToken, nodeToken, grainOpacity, accentGamma])
 
   const pointer = useRef(new THREE.Vector2(2, 2))
   const smoothed = useRef(0)
 
+  // `useFrame` é o laço de renderização do React Three Fiber: roda a cada
+  // quadro, fora do ciclo do React, e escrever nos uniforms do material é
+  // exatamente o que anima o shader. A regra de imutabilidade não distingue
+  // esse caso de uma mutação de estado durante o render.
+  /* eslint-disable react-hooks/immutability -- ver nota acima */
   useFrame((state, delta) => {
     const u = materialRef.current?.uniforms
     if (!u) return
@@ -129,6 +138,7 @@ function Plate({
 
     u.uPixelRatio.value = Math.min(state.gl.getPixelRatio(), 2)
   })
+  /* eslint-enable react-hooks/immutability */
 
   // A placa é quadrada e cabe inteira na menor dimensão da viewport.
   const scale = Math.min(viewport.width, viewport.height) * 0.5

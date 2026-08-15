@@ -27,30 +27,36 @@ export function Method() {
     const track = trackRef.current
     if (!section || !track) return
 
-    const ctx = gsap.context(() => {
-      // Só ancora onde há espaço e permissão para isso.
-      ScrollTrigger.matchMedia({
-        "(min-width: 1024px) and (prefers-reduced-motion: no-preference)": () => {
-          const distance = () => track.scrollWidth - track.clientWidth
-          if (distance() <= 0) return
+    // `gsap.matchMedia()` e não `ScrollTrigger.matchMedia()`: o segundo está
+    // descontinuado desde o GSAP 3.11 e não participa do ciclo de limpeza.
+    // Como `pin: true` envolve a section num `pin-spacer`, um trigger que não
+    // é desmontado deixa a section pendurada dentro do spacer, e o React falha
+    // ao removê-la na navegação.
+    const mm = gsap.matchMedia()
 
-          gsap.to(track, {
-            scrollLeft: distance,
-            ease: "none",
-            scrollTrigger: {
-              trigger: section,
-              start: "top top",
-              end: () => `+=${distance()}`,
-              pin: true,
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
-          })
-        },
-      })
-    }, section)
+    // Só ancora onde há espaço e permissão para isso.
+    mm.add(
+      "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
+      () => {
+        const distance = () => track.scrollWidth - track.clientWidth
+        if (distance() <= 0) return
 
-    return () => ctx.revert()
+        gsap.to(track, {
+          scrollLeft: distance,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: () => `+=${distance()}`,
+            pin: true,
+            scrub: 1,
+            invalidateOnRefresh: true,
+          },
+        })
+      }
+    )
+
+    return () => mm.revert()
   }, [])
 
   return (

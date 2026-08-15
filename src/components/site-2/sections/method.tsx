@@ -37,9 +37,17 @@ export function Method() {
     const track = trackRef.current
     if (!section || !track) return
 
-    const ctx = gsap.context(() => {
-      ScrollTrigger.matchMedia({
-        "(min-width: 1024px) and (prefers-reduced-motion: no-preference)": () => {
+    // `gsap.matchMedia()` e não `ScrollTrigger.matchMedia()`: o segundo está
+    // descontinuado desde o GSAP 3.11 e não participa do ciclo de limpeza.
+    // Como `pin: true` envolve a section num `pin-spacer`, um trigger que não
+    // é desmontado deixa a section pendurada dentro do spacer. O React então
+    // tenta removê-la do pai original na navegação e falha com
+    // "NotFoundError: The object can not be found here".
+    const mm = gsap.matchMedia()
+
+    mm.add(
+      "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
+      () => {
           // Distância recalculada a cada refresh: no primeiro layout a largura
           // ainda não é confiável, e um valor congelado aqui foi o que fazia a
           // animação inteira acontecer em poucos pixels de scroll.
@@ -63,11 +71,11 @@ export function Method() {
               invalidateOnRefresh: true,
             },
           })
-        },
-      })
-    }, section)
+      }
+    )
 
-    return () => ctx.revert()
+    // Devolve a section ao pai original antes de o React desmontá-la.
+    return () => mm.revert()
   }, [])
 
   return (
