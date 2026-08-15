@@ -6,15 +6,15 @@ import { ArrowLeft, ArrowRight } from "lucide-react"
 import { Container, SectionLabel, Rule } from "@/components/site-3/primitives"
 import { AnimatedHeading } from "@/components/site-3/animated-heading"
 import { ClosingCta } from "@/components/site-3/sections/closing-cta"
-import { projects, BASE } from "@/lib/site-3/content"
+import { allProjects, BASE } from "@/lib/site-3/content"
 
 export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }))
+  return allProjects.map((project) => ({ slug: project.slug }))
 }
 
 export async function generateMetadata(props: PageProps<"/projetos/[slug]">) {
   const { slug } = await props.params
-  const project = projects.find((p) => p.slug === slug)
+  const project = allProjects.find((p) => p.slug === slug)
   if (!project) return {}
   return {
     title: project.client,
@@ -25,11 +25,11 @@ export async function generateMetadata(props: PageProps<"/projetos/[slug]">) {
 
 export default async function ProjetoPage(props: PageProps<"/projetos/[slug]">) {
   const { slug } = await props.params
-  const index = projects.findIndex((p) => p.slug === slug)
+  const index = allProjects.findIndex((p) => p.slug === slug)
   if (index === -1) notFound()
 
-  const project = projects[index]
-  const next = projects[(index + 1) % projects.length]
+  const project = allProjects[index]
+  const next = allProjects[(index + 1) % allProjects.length]
 
   const facts = [
     { label: "Cliente", value: project.client },

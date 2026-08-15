@@ -21,7 +21,7 @@ export {
   whatsappLink,
 } from "./copy"
 
-export { projects, drawerProjects, type Project } from "./projects"
+export { projects, drawerProjects, allProjects, type Project } from "./projects"
 export { testimonials, type Testimonial } from "./testimonials"
 
 import { nav as baseNav, footer as baseFooter } from "@/lib/site/content"

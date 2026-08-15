@@ -8,6 +8,8 @@
  */
 
 import { projectPages, type ProjectImage } from "./project-pages"
+import { drawerPages } from "./drawer-pages"
+import { drawerCopy } from "./drawer-copy"
 
 export type Project = {
   slug: string
@@ -126,11 +128,22 @@ export const projects: Project[] = copy.map((project) => {
 
 /**
  * A gaveta: trabalhos que aparecem só na página de projetos, atrás do botão
- * "ver mais projetos".
+ * "ver mais projetos". Não entram na home, que fica com a seleção principal.
  *
- * Os PDFs existem em `PROJETOS CYMATICA/GAVETA`, mas ainda não foram extraídos
- * nem tiveram o texto escrito. Enquanto a lista estiver vazia, o botão e a
- * segunda leva não são renderizados: a página não mostra um controle que não
- * leva a lugar nenhum.
+ * Mesmo tratamento dos projetos principais: primeira e última página do PDF
+ * descartadas, origem a 4000px do vetor e WebP q95. A diferença é a capa, aqui
+ * escolhida por análise da própria apresentação em vez de indicada à mão.
  */
-export const drawerProjects: Project[] = []
+export const drawerProjects: Project[] = drawerCopy
+  .filter((project) => drawerPages[project.slug])
+  .map((project) => {
+    const entry = drawerPages[project.slug]
+    return {
+      ...project,
+      cover: entry.coverImage,
+      pages: entry.pages,
+    }
+  })
+
+/** Todos os trabalhos, para as rotas que precisam resolver qualquer slug. */
+export const allProjects: Project[] = [...projects, ...drawerProjects]

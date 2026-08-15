@@ -6,7 +6,7 @@ import { Container, SectionLabel, Rule } from "@/components/site-3/primitives"
 import { AnimatedHeading } from "@/components/site-3/animated-heading"
 import { ProjectCard } from "@/components/site-3/project-card"
 import { ClosingCta } from "@/components/site-3/sections/closing-cta"
-import { services, projects, BASE } from "@/lib/site-3/content"
+import { services, allProjects, BASE } from "@/lib/site-3/content"
 import { formatBRL, pricedServices } from "@/lib/site/pricing"
 
 export function generateStaticParams() {
@@ -26,7 +26,7 @@ export default async function ServicoPage(props: PageProps<"/servicos/[slug]">) 
   if (!service) notFound()
 
   const pricing = pricedServices.find((s) => s.slug === slug)
-  const related = projects.filter((p) => p.services.includes(service.name)).slice(0, 3)
+  const related = allProjects.filter((p) => p.services.includes(service.name)).slice(0, 3)
 
   return (
     <>
