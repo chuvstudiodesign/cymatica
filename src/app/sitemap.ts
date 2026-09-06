@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: "/", priority: 1 },
     { url: "/projetos", priority: 0.9 },
     { url: "/servicos", priority: 0.8 },
+    { url: "/automacao-de-design", priority: 0.8 },
     { url: "/diagnostico", priority: 0.8 },
     { url: "/sobre", priority: 0.6 },
     { url: "/orcamento", priority: 0.6 },

@@ -8,6 +8,7 @@ import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { nav, whatsappLink } from "@/lib/site-3/content"
 import { CymaticaLockup, CymaticaMark } from "@/components/site/cymatica-mark"
+import { PropostaNotch } from "@/components/site-3/proposta/proposta-notch"
 
 /** Mensagem que já vai preenchida ao abrir a conversa. */
 const SAUDACAO =
@@ -24,6 +25,18 @@ const SAUDACAO =
  */
 export function SiteHeader() {
   const pathname = usePathname()
+  /**
+   * Rotas em que a pílula flutuante não entra.
+   *
+   * Ela é fixa na viewport e o disco do símbolo é `bg-primary`: injeta um
+   * ponto de laranja em *toda* dobra da página em que aparece, e em várias
+   * delas um segundo ponto. Nas páginas de venda longa isso quebra o
+   * orçamento de acento e ainda tapa conteúdo no canto inferior. Ambas já têm
+   * entradas próprias de WhatsApp no corpo.
+   */
+  const semPilula =
+    pathname.startsWith("/proposta-") || pathname === "/automacao-de-design"
+  const naProposta = pathname.startsWith("/proposta-")
   const [scrolled, setScrolled] = useState(false)
   const [overLight, setOverLight] = useState(false)
   const [open, setOpen] = useState(false)
@@ -58,6 +71,20 @@ export function SiteHeader() {
         Pular para o conteúdo
       </a>
 
+      {/* Na proposta a barra some inteira e o `PropostaNotch` toma o lugar:
+          a navegação do site levaria o cliente para fora de um documento com
+          preço e botão de envio. O skip link acima continua, porque ele é
+          acessibilidade e não navegação.
+
+          O notch é renderizado daqui, e não da página, porque este componente
+          é montado FORA do `#smooth-wrapper`. Dentro dele o ScrollSmoother
+          aplica `transform` no contêiner, e elemento com ancestral
+          transformado para de grudar: `position: fixed` passa a se resolver
+          contra o contêiner, não contra a viewport, e o notch sobe junto com
+          a página. */}
+      {naProposta && <PropostaNotch />}
+
+      {!naProposta && (
       <header
         className={cn(
           "pointer-events-none fixed inset-x-0 top-0 z-50 px-4 pt-4 md:px-6 md:pt-6",
@@ -116,6 +143,7 @@ export function SiteHeader() {
           </button>
         </nav>
       </header>
+      )}
 
       <div
         id="menu-mobile"
@@ -143,6 +171,13 @@ export function SiteHeader() {
         </a>
       </div>
 
+      {/* A pílula é fixa na viewport, e o disco do símbolo é `bg-primary`:
+          ela injeta um ponto de laranja em toda dobra da página em que
+          aparece. Numa proposta isso quebra o orçamento de acento — inclusive
+          nas duas dobras cujo efeito depende de não haver acento nenhum. Lá o
+          WhatsApp já tem quatro entradas próprias (herói, cartão, mídia social
+          e o envio do modal), então a pílula é redundante. */}
+      {!semPilula && (
       <a
         href={whatsappLink(SAUDACAO)}
         target="_blank"
@@ -159,6 +194,7 @@ export function SiteHeader() {
           <CymaticaMark variant="arcs" className="size-4" />
         </span>
       </a>
+      )}
     </>
   )
 }

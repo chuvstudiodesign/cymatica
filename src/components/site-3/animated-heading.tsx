@@ -65,14 +65,46 @@ export function AnimatedHeading({
     let split: SplitText | null = null
     let cancelled = false
 
-    // A divisão em linhas depende da métrica final da fonte. Dividir antes de
-    // a Figtree carregar produz quebras erradas que ficam congeladas.
-    document.fonts.ready.then(() => {
+    /**
+     * A divisão em linhas depende da métrica final da fonte: dividir antes de
+     * a Figtree carregar produz quebras erradas que ficam congeladas.
+     *
+     * Mas esperar `document.fonts.ready` sem teto custava caro. O título nasce
+     * em `opacity-0`, e num carregamento lento ele ficava invisível enquanto a
+     * fonte não chegasse — medido em 4094ms com a `.woff2` atrasada em 4s. Isso
+     * anula o `display: swap` justamente no maior texto da dobra: o navegador
+     * pinta na fonte de reserva e o nosso CSS esconde assim mesmo.
+     *
+     * Com o teto de 300ms, o pior caso vira "aparece na fonte de reserva e a
+     * quebra é recalculada quando a real chega" — que é o comportamento que o
+     * `swap` promete. O caso normal não muda: a fonte local resolve em poucos
+     * milissegundos e a corrida termina no `fonts.ready` mesmo.
+     */
+    const fontesProntas = Promise.race([
+      document.fonts.ready,
+      new Promise((resolve) => setTimeout(resolve, 300)),
+    ])
+
+    fontesProntas.then(() => {
       if (cancelled || !ref.current) return
       try {
-        split = SplitText.create(element, { type: "lines", mask: "lines" })
+        split = SplitText.create(element, {
+          type: "lines",
+          mask: "lines",
+          // Sem `linesClass` o SplitText não dá classe nenhuma à linha, e a
+          // máscara — que é um clone dela — também sai sem classe. Nomear a
+          // linha é o que nos deixa alcançar a máscara pelo CSS, em
+          // `.site-line-mask`, para alargar a área de recorte.
+          linesClass: "site-line",
+        })
+        // Ver `.is-split` no site.css: segura as margens negativas das
+        // máscaras, que colapsariam entre si num contexto de bloco.
+        element.classList.add("is-split")
         gsap.from(split.lines, {
-          yPercent: 115,
+          // 135 e não 115 porque a máscara agora recorta 0.2em além da caixa
+          // de linha. A linha precisa começar abaixo dessa borda maior, senão
+          // aparece um naco dela antes de a animação começar.
+          yPercent: 135,
           duration: 0.95,
           ease: "expo.out",
           stagger,
@@ -91,6 +123,7 @@ export function AnimatedHeading({
       // A ordem importa: desfazer a divisão devolve o elemento ao estado que o
       // React conhece antes que ele seja desmontado.
       split?.revert()
+      element.classList.remove("is-split")
       ScrollTrigger.getAll()
         .filter((t) => t.trigger === element)
         .forEach((t) => t.kill())

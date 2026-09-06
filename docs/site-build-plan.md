@@ -165,3 +165,212 @@ Adaptações feitas nos componentes React Bits, todas comentadas no código:
   projetos. Os nomes LAUN, mun, DE MARCO e Seu Moacir vêm das próprias peças.
 - `submitLead` grava em `.leads/leads.jsonl`. Ao publicar em ambiente sem disco persistente,
   trocar por CRM ou webhook.
+
+---
+
+# Proposta comercial privada — `/proposta-juliano`
+
+**Data:** 2026-09-05
+**Status:** pronta para envio
+**Cliente:** Juliano, abrindo uma pizzaria
+
+Documento dirigido a uma pessoa, enviado por link direto. Fora do índice
+(`robots: { index: false, follow: false }`) e fora do `sitemap.ts`.
+
+## 1. Isolamento
+
+Arquivos criados, e só estes:
+
+```
+src/app/(site)/proposta-juliano/page.tsx
+src/components/site-3/proposta/*.tsx        13 componentes
+src/lib/site-3/proposta.ts                  todo o conteúdo, em dados
+```
+
+`git status --short` no fim do trabalho mostra apenas esses caminhos, mais
+`src/app/(site)/site.css` e `src/components/site-3/animated-heading.tsx`, que
+**já estavam modificados antes desta execução** e não foram tocados.
+`package.json`, `package-lock.json` e `components.json` ficaram intactos: os
+dois componentes React Bits instalados no meio do caminho não trouxeram
+dependência nova, e ambos acabaram descartados (ver seção 4).
+
+## 2. Decisões de arquitetura
+
+**Todo o conteúdo em `lib/site-3/proposta.ts`.** Preço, prazo, taxa, lista de
+peças e cada frase. Nenhuma string de cliente dentro de JSX. Trocar o preço de
+um pacote é editar um número num lugar só.
+
+**A personalização acontece uma vez.** `hero.personalizacao` é a única linha
+que nomeia o cliente. Da segunda seção em diante o texto fala da entrega e usa
+alusão indireta ("a casa", "a fachada", "a caixa"). Uma proposta que repete o
+nome do cliente a cada seção parece mala direta.
+
+**Ritmo claro/escuro herdado da home:**
+
+```
+herói ─ O PACOTE ─ argumento ─ PACOTES ─ PRAZOS ─ mídia social ─ estúdio
+```
+
+Pacotes e prazos são duas `LightSection` seguidas, e `.light + .light` no
+`site.css` zera o padding de topo da segunda: as duas leem como um bloco só.
+Prazo é parte da decisão de preço, não assunto separado.
+
+**Um ponto de laranja por dobra**, e em nenhuma dobra dois:
+
+| Dobra | Onde |
+|---|---|
+| Herói | ponto ao lado da linha de personalização |
+| O pacote | nenhum, de propósito |
+| Argumento | o grão central do campo nodal |
+| Pacotes | o CTA do Insane (os outros dois são `outline`) |
+| Prazos | o ponto do fast |
+| Mídia social | o CTA de cotação |
+| Estúdio | nenhum |
+| Modal | o botão de envio |
+
+O destaque do cartão Insane é feito por **superfície** (`bg-muted`,
+`border-foreground/25`), não por cor, justamente para o laranja sobrar para o
+CTA.
+
+**O gancho da página de automação de design com IA.** `AUTOMACAO_HREF` é
+`null` em `proposta.ts`, com a rota futura comentada logo acima. Enquanto for
+`null`, o botão "Entender a automação" abre o WhatsApp com uma mensagem
+própria. Quando a página nascer, basta preencher a constante e o botão vira
+navegação interna sozinho. Em nenhum momento existe link quebrado.
+
+**O slot do case de mídia social.** `social.case.src` é `null`. O componente
+`case-slot.tsx` detecta e rende um campo de interferência em CSS puro (dois
+feixes de anéis concêntricos com origens diferentes, em `--color-border`, que
+ao se sobreporem produzem franjas) com a etiqueta "Case em produção". Para
+trocar: salvar a imagem em `public/projects/`, pôr o caminho em `src` e
+descrever em `alt`. Nada no componente muda.
+
+## 3. O seletor
+
+Fluxo: escolher pacote → modal quase de tela cheia → marcar peças Plus →
+enviar pelo WhatsApp com a mensagem já formatada.
+
+**Modal montado sobre `@base-ui/react/dialog` cru, não sobre `ui/dialog.tsx`.**
+O `DialogContent` do design system traz `sm:max-w-sm` no className, e o
+`tailwind-merge` não desduplica variante prefixada: passar largura pelo `cn`
+derruba só o valor sem prefixo e o modal trava em 384px. Aqui a moldura é
+`inset-4` / `md:inset-10` (40px de respiro), não largura máxima.
+
+**A colisão entre a trava de scroll e o ScrollSmoother.** Verificado no fonte:
+`@base-ui/utils/useScrollLock.js`, no caminho para navegador sem
+`scrollbar-gutter: stable`, escreve `body.style.height = "100dvh"`. E o
+ScrollSmoother usa a altura do `<body>` como curso do scroll. Travar colapsa o
+curso, o navegador prende o scroll perto do topo e a página desliza para trás
+do modal; ao fechar, o leitor perdeu onde estava. Como o Mac usa barra
+sobreposta por padrão e cai no caminho seguro, o defeito só aparece no Windows.
+
+Saída, em duas metades:
+
+- `modal="trap-focus"` quando há smoother. Mantém foco preso e `aria-hidden`
+  no resto do documento (`DialogPopup.js` passa `modal !== false` ao gerenciador
+  de foco), e só abre mão da trava nativa.
+- `ScrollSmoother.paused(true)` na abertura, que alinha a posição nativa à
+  renderizada antes de travar — por isso não há salto — e mantém o scroll
+  aninhado liberado para o corpo do modal.
+
+Sem smoother (movimento reduzido), `modal={true}` e a trava nativa voltam, e
+aí são seguras. **Nada de `ScrollTrigger.refresh()` no fechamento:** a altura
+da página não mudou, e remedir tudo produziria um quadro de salto.
+
+**Seleção de peças:** `ToggleGroup multiple` + `Toggle` do Base UI, primitivas
+cruas (o wrapper `ui/toggle-group.tsx` fixa `w-fit`, `flex-row` e a altura do
+`toggleVariants`). Entrega `aria-pressed`, roving tabindex e navegação por
+seta. O estado marcado é **inversão de superfície**, monocromática: 29 acentos
+laranja na mesma tela não seriam acento nenhum.
+
+**As 29 peças**, em quatro grupos que seguem o caminho físico do cliente da
+casa, do salão até a rua: Salão (8), Delivery (8), Papelaria (7), Fachada (6).
+Nenhuma tem preço — a seleção vai para cotação. O aviso de que **se contrata o
+design da peça, não a impressão** é o primeiro bloco da área rolável, visível
+sem rolar, e volta na mensagem do WhatsApp.
+
+**A mensagem do WhatsApp** (`buildProposalMessage`) é o único artefato que
+sobrevive à página. Traz pacote com preço, prazo com taxa, total fechado e as
+peças agrupadas na mesma ordem da tela.
+
+## 4. Bibliotecas
+
+| Fonte | Onde |
+|---|---|
+| Base UI | `Dialog`, `ToggleGroup`, `Toggle`, `RadioGroup`, `Radio` — primitivas cruas |
+| Design system | `Button` (via `CtaButton`), `Container`, `Section`, `LightSection`, `SectionLabel`, `Reveal`, `Rule` |
+| GSAP | ScrollTrigger e matchMedia no campo nodal e na onda dos cartões; `ScrollSmoother.get()` na trava e na âncora |
+| React Bits | **nenhum novo** |
+
+Avaliados e **descartados**, com motivo:
+
+- **`SplitFlapText`** (React Bits, zero dependência): o painel de aeroporto é
+  bonito e mecânico, mas mecânico não é o vocabulário da marca. Cimática é
+  onda, interferência e padrão nodal, não engrenagem.
+- **`StrokeText`** (React Bits): o traçado que se desenha *é* vocabulário da
+  marca, mas o componente rende SVG com `fontSize` em px fixo e não acompanha
+  a escala fluida do `site.css`. Um tamanho fora da escala numa página que usa
+  a escala em todos os outros títulos custaria mais do que ganharia.
+- **`Noise`** (React Bits): laço de `requestAnimationFrame` permanente num
+  slot que existe só até a imagem do case chegar, e sem caminho para
+  `prefers-reduced-motion`. Movimento sem causa. O campo de interferência em
+  CSS faz o mesmo trabalho a custo zero.
+- **Blocos de pricing** de 21st.dev e cards do Cult UI: todos chegam com
+  `rounded-2xl` com glow, bullets em check-circle e badge "Most popular". Seria
+  remover 100% do que os define. Composto à mão.
+
+Os dois primeiros chegaram a ser instalados e foram removidos; `package.json`
+não registra diferença.
+
+## 5. Movimento
+
+Dois momentos notáveis na página inteira. O resto é silêncio.
+
+**`nodal-field.tsx`** — 150 grãos espalhados ao acaso migram para as linhas
+nodais de uma figura de Chladni quando a seção do argumento entra na tela. É a
+mesma equação e o mesmo laço de Newton do `chladni-shader.ts` que roda em WebGL
+na home, portados para JS e aplicados a nós do DOM: a placa e este campo
+desenham a mesma figura, muda só o suporte. Caos vira ordem, e a ordem é função
+da frequência — que é a tese da marca aplicada à tese da seção. DOM puro, sem
+WebGL, sem canvas, sem dependência. `once: true`, `will-change` posto e
+removido em lote, metade dos grãos no celular, figura já formada em
+`prefers-reduced-motion`.
+
+**`use-package-wave.tsx`** — os três cartões entram como propagação de onda a
+partir da crista (o cartão em destaque), não na ordem do DOM. Precisa de
+ScrollTrigger próprio: o `batch` do provider escalona da esquerda para a
+direita e agruparia a etiqueta e o título da seção no mesmo escalonamento.
+
+O estado inicial é aplicado **por JavaScript e só quando o elemento ainda está
+abaixo da dobra**. Nunca há `opacity-0` no HTML do servidor: esta é a tabela de
+preços de uma proposta enviada por link, e uma falha de script não pode
+deixá-la invisível.
+
+**`scroll-cta.tsx`** — o CTA do herói rola até `#pacotes` por
+`smoother.scrollTo()`. O salto nativo cai deslocado porque o ScrollSmoother
+transforma `#smooth-content` e a posição que o navegador calcula é a
+transformada. O `href` continua no HTML: sem JS, o link funciona pelo caminho
+do navegador.
+
+## 6. Pendência encontrada e **não** corrigida
+
+**`[data-reveal]` está inerte no site inteiro.** Em
+`smooth-scroll-provider.tsx`, `data-reveal-ready` é posto no `<html>` logo
+depois de criar o `ScrollTrigger.batch`. A regra
+`[data-reveal-ready] [data-reveal] { opacity: 1; transform: none }` do
+`site.css` passa a valer imediatamente, então quando o `onEnter` dispara o
+GSAP lê `opacity: 1` e anima de 1 para 1. Nada se move: os elementos aparecem
+todos no instante em que o atributo entra. E `data-reveal-delay` escreve
+`transitionDelay`, propriedade que tween de GSAP ignora — resquício de uma
+versão anterior baseada em transição CSS.
+
+Correção, duas linhas dentro do `gsap.context` e **antes** de setar o atributo:
+
+```ts
+gsap.set(gsap.utils.toArray<HTMLElement>("[data-reveal]"), { opacity: 0, y: 26 })
+document.documentElement.setAttribute("data-reveal-ready", "")
+```
+
+Não aplicada: `smooth-scroll-provider.tsx` e `site.css` estão fora do escopo
+desta tarefa e a mudança afetaria a home e as outras sete rotas. Fica
+registrada para quem tocar o sistema de revelação.

@@ -68,16 +68,37 @@ export function Reveal({
  * CTA em escala editorial. Compõe o Button do design system.
  *
  * Quando recebe `render` (um `<Link>`, por exemplo), o elemento final é uma
- * âncora e não um `<button>`. O Base UI precisa saber disso: sem
- * `nativeButton={false}` ele mantém a semântica de botão sobre um `<a>`, o que
- * confunde leitor de tela e quebra o comportamento esperado de navegação.
+ * âncora e não um `<button>`, e ele precisa ser anunciado como link.
+ *
+ * `nativeButton={false}` sozinho fazia o oposto do que este comentário
+ * prometia. Verificado em `internals/use-button/useButton.js:183`: o Base UI
+ * decide entre `type="button"` e `role="button"` por esse sinalizador — com
+ * `false`, ele conclui que o elemento não é botão nativo e **acrescenta**
+ * `role="button"` para preservar a semântica. Era exatamente o que se queria
+ * evitar: leitor de tela anunciava "botão" numa âncora, e o usuário perdia o
+ * que se espera de um link (abrir em nova aba, copiar o endereço).
+ *
+ * `role="link"` desfaz isso: o `role` do consumidor entra depois na mesclagem
+ * e sobrescreve o do primitivo. É explícito onde a âncora já teria o papel
+ * implícito, e é isso que o torna à prova do primitivo. O sinalizador continua
+ * em `false` porque ele também governa `type`, e `type="button"` numa âncora é
+ * inválido.
+ *
+ * Vale porque todo `render` deste projeto é navegação — `<Link>` ou `<a>`. Um
+ * `render` que não navegue precisaria passar o próprio `role`.
  */
 export function CtaButton({ className, ...props }: React.ComponentProps<typeof Button>) {
   return (
     <Button
       nativeButton={props.render ? false : undefined}
+      role={props.render ? "link" : undefined}
       className={cn(
         "h-13 rounded-full px-7 text-[0.9375rem] font-medium",
+        // O `ring-ring/50` do design system mede 2,24:1 no escuro e 1,88:1 na
+        // ilha clara, contra os 3:1 da WCAG 1.4.11 — e some por completo sobre
+        // o próprio botão laranja. Em opacidade cheia vai a 5,78:1 e 3,24:1.
+        // Sobrescrito aqui porque `ui/button.tsx` é do design system.
+        "focus-visible:ring-ring",
         "transition-transform duration-200 hover:-translate-y-0.5",
         className
       )}

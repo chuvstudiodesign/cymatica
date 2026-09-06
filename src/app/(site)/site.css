@@ -4,6 +4,33 @@
    e não é tocado aqui.
    ============================================================ */
 
+/* --- Cores da placa de Chladni da proposta --------------------
+   `resolveTokenColor` monta uma sonda, lê `getComputedStyle().color`
+   e assume que o valor volta em `rgb()`. Não volta: os tokens são
+   declarados em `oklch()` e o Chromium computa para `lab()`. O
+   regex então captura os números do LAB e divide por 255, de modo
+   que branco (`lab(99.652 0 0)`) vira `[0.391, 0, 0]` — vermelho
+   escuro. É o que pintava a placa de vinho.
+
+   Estas duas variáveis existem em hexadecimal justamente porque
+   hexadecimal computa para `rgb()` e atravessa o resolvedor
+   intacto. Não são tokens de marca novos: são os mesmos
+   `--ink-600` e `--foreground`, escritos num formato que o
+   resolvedor consegue ler.
+
+   O defeito é do resolvedor, compartilhado com a placa da home, e
+   não foi corrigido lá de propósito — mexer nele mudaria as cores
+   da home, que está fora desta tarefa. */
+:root {
+  --proposta-placa-grao: #6b6b6b;
+  --proposta-placa-no: #fefefe;
+
+  /* A mesma placa sobre ilha clara: grafite sobre papel. Monocromática de
+     propósito — a dobra da demonstração já gasta o acento no CTA. */
+  --placa-clara-grao: #b5b5b5;
+  --placa-clara-no: #282828;
+}
+
 /* --- Escala de display fluida --------------------------------- */
 .site-display {
   font-size: clamp(3rem, 11vw, 11rem);
@@ -51,6 +78,43 @@
 
 .site-measure {
   max-width: 62ch;
+}
+
+/* --- Máscara das linhas do SplitText -------------------------
+   O `mask: "lines"` embrulha cada linha num elemento com
+   `overflow: clip`, e esse elemento tem exatamente a altura da
+   caixa de linha. Como a nossa entrelinha é fechada (0.9 no
+   display, 0.98 no h1 e no h2), a caixa fica menor que o desenho
+   da letra: na Figtree a perna do "g" desce 0.212em abaixo da
+   linha de base e o "j" desce 0.215em, contra uma sobra de caixa
+   de apenas 0.14em. O que passa disso era cortado — assim como a
+   cedilha do "ç" e os acentos do "Ã" no topo.
+
+   A saída é engordar a máscara com padding — o recorte acontece
+   na borda dela, então mais padding é mais área visível — e
+   devolver o mesmo valor em margem negativa, para que o layout
+   não perceba nada. A tipografia continua idêntica; só o
+   retângulo invisível que recorta é que cresce.
+
+   Existe `overflow-clip-margin`, que faria isso numa linha só,
+   mas o WebKit não implementa: no Safari o texto continuaria
+   cortado. Padding com margem negativa funciona em todo lugar.
+
+   Medida: 0.2em cobre o pior caso, que é o `.site-display` com
+   entrelinha 0.9 (0.115em embaixo, 0.179em em cima). */
+.site-line-mask {
+  padding-block: 0.2em;
+  margin-block: -0.2em;
+}
+
+/* Máscaras são irmãs e block, então as margens negativas de uma
+   colapsariam com as da seguinte e as linhas desandariam meio
+   passo a cada quebra. Flex não colapsa margem. A classe entra
+   pelo JS só depois que a divisão dá certo, para o título nunca
+   virar flex enquanto ainda é texto corrido. */
+.is-split {
+  display: flex;
+  flex-direction: column;
 }
 
 /* --- Estrutura do ScrollSmoother ----------------------------- */

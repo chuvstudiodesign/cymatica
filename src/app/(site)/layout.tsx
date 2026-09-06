@@ -70,6 +70,37 @@ export const metadata: Metadata = {
 export default function SiteLayout({ children }: LayoutProps<"/">) {
   return (
     <>
+      {/* Sem JavaScript, a página inteira ficava em branco.
+          `[data-reveal]` nasce em `opacity: 0` esperando o GSAP, e todo
+          `AnimatedHeading` nasce em `opacity-0` esperando o SplitText — 68 nós
+          de texto ao todo, incluindo o `h1`. A saída por classe `no-js` que os
+          dois previam nunca funcionou: nada em lugar nenhum põe essa classe no
+          `<html>`.
+
+          O `noscript` é o produtor que faltava, e não depende de script para
+          existir. Quem tem JavaScript nunca vê esta regra; quem não tem lê a
+          página inteira, sem animação. Numa proposta enviada por link, tela
+          branca não é uma falha aceitável. */}
+      <noscript>
+        <style>{`
+          [data-reveal], .opacity-0 { opacity: 1 !important; transform: none !important; }
+
+/* Limitacao conhecida, sem conserto por CSS: a segunda camada
+             dos "ver mais" nao abre sem JavaScript.
+
+             O painel do Base UI leva o atributo hidden, e o React o serializa
+             como booleano -- hidden="" e nao hidden="until-found". A folha do
+             proprio navegador esconde isso com display:none !important, e
+             !important de agente de usuario vence !important de autor: nenhuma
+             regra daqui alcanca. Medido: com a regra aplicada, height virou
+             auto e display continuou none.
+
+             Vive-se bem com isso. A opcao hiddenUntilFound garante que o texto
+             esta no documento, entao indexador le e o Ctrl+F do navegador abre
+             o painel quando ha JavaScript. Sem JavaScript perde-se so a camada
+             de aprofundamento; a pagina inteira continua legivel. */
+        `}</style>
+      </noscript>
       <OrganizationJsonLd />
       <SiteHeader />
       <SmoothScrollProvider>
