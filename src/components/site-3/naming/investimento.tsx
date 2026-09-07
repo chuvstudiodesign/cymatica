@@ -127,7 +127,7 @@ export function NamingInvestimento() {
           entender o que ele economiza juntando as duas. */}
       <div
         data-reveal=""
-        className="mt-16 rounded-2xl border border-primary p-8 md:mt-20 md:p-10"
+        className="mt-16 rounded-2xl border border-border p-8 md:mt-20 md:p-10"
       >
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
