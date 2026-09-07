@@ -127,7 +127,7 @@ export function NamingInvestimento() {
           entender o que ele economiza juntando as duas. */}
       <div
         data-reveal=""
-        className="mt-16 rounded-2xl border border-border p-8 md:mt-20 md:p-10"
+        className="mt-16 rounded-2xl border border-primary p-8 md:mt-20 md:p-10"
       >
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
@@ -161,7 +161,7 @@ export function NamingInvestimento() {
                 <p className="mt-3 flex flex-wrap items-baseline gap-3">
                   {/* O valor cheio riscado ao lado do combinado: sem ele, o
                       desconto é uma afirmação; com ele, é uma conta. */}
-                  <span className="text-lg text-muted-foreground line-through tabular-nums">
+                  <span className="text-lg text-muted-foreground line-through decoration-primary decoration-2 tabular-nums">
                     {formatBRL(combo.soma)}
                   </span>
                   <span className="site-h3 tabular-nums">
