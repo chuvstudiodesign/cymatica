@@ -37,7 +37,7 @@ export const meta = {
 export const hero = {
   label: "Proposta de naming",
   title: "O nome vem antes de tudo.",
-  personalizacao: "Para Juliano Brandalizel",
+  personalizacao: "Para Juliano Brandalisse",
   body: "Antes da fachada, da caixa e do cardápio, existe a palavra que as pessoas vão dizer quando indicarem a sua casa para alguém. É o único elemento da marca que sobrevive ao boca a boca. Esta proposta é sobre acertar essa palavra.",
   primaryCta: { label: "Ver o processo", href: "#processo" },
   secondaryCta: {
