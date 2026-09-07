@@ -150,7 +150,7 @@ export const registro = {
 
 export const entrega = {
   label: "A entrega",
-  title: "De duas a três opções, estudadas até o osso.",
+  title: "De duas a três opções, estudadas em detalhes.",
   lead: "Não é uma lista de cinquenta nomes para você escolher. São poucas opções, cada uma defensável, com o raciocínio inteiro na mesa.",
   itens: [
     {
