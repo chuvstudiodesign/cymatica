@@ -238,7 +238,7 @@ const PRECO_PRO = packages.find((p) => p.id === "pro")?.price ?? 0
 export const combo = {
   label: "Os dois juntos",
   title: "Nome e marca no mesmo contrato.",
-  body: "O nome vem primeiro e a identidade nasce em cima dele. Fechando os dois de uma vez, o valor cai.",
+  body: "O nome vem primeiro e a identidade nasce em cima dele. Fechando os dois de uma vez, o preço diminui.",
   itens: [
     { name: "Desenvolvimento de naming", price: investimento.price },
     { name: "Identidade visual, pacote Pro", price: PRECO_PRO },
