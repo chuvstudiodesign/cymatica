@@ -13,6 +13,7 @@
  * frase sobre registro passa por esse crivo.
  */
 
+import { packages } from "./proposta"
 import { formatBRL } from "@/lib/site/pricing"
 
 /* ──────────────────────── Contato desta proposta ─────────────────────── */
@@ -216,11 +217,37 @@ export const investimento = {
   label: "Investimento",
   title: "Um valor, o processo inteiro.",
   name: "Desenvolvimento de naming",
-  price: 2400,
+  price: 2200,
   body: "Briefing, construção, filtro, consulta de registro e apresentação. De duas a três opções finais, com o conceito de cada uma.",
   prazoLegend: "Prazo",
   totalLabel: "Total",
   ctaLabel: "Aprovar e começar",
+} as const
+
+/* ──────────────────────────── Os dois juntos ────────────────────────── */
+
+/**
+ * A oferta combinada.
+ *
+ * O preço do pacote Pro vem de `proposta.ts`, e não copiado à mão: são dois
+ * documentos que chegam ao mesmo cliente, e um número divergente entre eles
+ * custaria a confiança que a proposta inteira tenta construir.
+ */
+const PRECO_PRO = packages.find((p) => p.id === "pro")?.price ?? 0
+
+export const combo = {
+  label: "Os dois juntos",
+  title: "Nome e marca no mesmo contrato.",
+  body: "O nome vem primeiro e a identidade nasce em cima dele. Fechando os dois de uma vez, o valor cai.",
+  itens: [
+    { name: "Desenvolvimento de naming", price: investimento.price },
+    { name: "Identidade visual, pacote Pro", price: PRECO_PRO },
+  ],
+  soma: investimento.price + PRECO_PRO,
+  price: 4900,
+  ctaLabel: "Quero os dois",
+  message:
+    "Olá! Quero fechar o naming e a identidade visual (pacote Pro) juntos, pelo valor combinado.",
 } as const
 
 /* ───────────────────────────── Encerramento ─────────────────────────── */

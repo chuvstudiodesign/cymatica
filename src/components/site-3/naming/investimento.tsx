@@ -8,9 +8,11 @@ import { ArrowUpRight } from "lucide-react"
 import { Section, SectionLabel, CtaButton } from "@/components/site-3/primitives"
 import { AnimatedHeading } from "@/components/site-3/animated-heading"
 import {
+  combo,
   investimento,
   namingWhatsappLink,
   prazos,
+  whatsappLink,
   type Prazo,
 } from "@/lib/site-3/naming"
 import { formatBRL } from "@/lib/site/pricing"
@@ -116,6 +118,71 @@ export function NamingInvestimento() {
               {investimento.ctaLabel}
               <ArrowUpRight className="size-4" aria-hidden />
             </CtaButton>
+          </div>
+        </div>
+      </div>
+
+      {/* A oferta combinada. Fica depois do preço do naming, e não no lugar
+          dele: o cliente precisa entender o que custa cada coisa antes de
+          entender o que ele economiza juntando as duas. */}
+      <div
+        data-reveal=""
+        className="mt-16 rounded-2xl border border-border p-8 md:mt-20 md:p-10"
+      >
+        <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <p className="site-label text-muted-foreground">{combo.label}</p>
+            <h3 className="site-h3 mt-6 max-w-[18ch] text-balance">
+              {combo.title}
+            </h3>
+            <p className="mt-5 max-w-[38ch] text-pretty text-muted-foreground">
+              {combo.body}
+            </p>
+          </div>
+
+          <div className="lg:col-span-7">
+            <dl className="flex flex-col gap-4 text-sm">
+              {combo.itens.map((item) => (
+                <div
+                  key={item.name}
+                  className="flex flex-wrap justify-between gap-4 border-b border-border pb-4"
+                >
+                  <dt className="text-muted-foreground">{item.name}</dt>
+                  <dd className="tabular-nums">{formatBRL(item.price)}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <div className="mt-8 flex flex-wrap items-end justify-between gap-6">
+              <div>
+                <p className="site-label text-muted-foreground">
+                  {investimento.totalLabel}
+                </p>
+                <p className="mt-3 flex flex-wrap items-baseline gap-3">
+                  {/* O valor cheio riscado ao lado do combinado: sem ele, o
+                      desconto é uma afirmação; com ele, é uma conta. */}
+                  <span className="text-lg text-muted-foreground line-through tabular-nums">
+                    {formatBRL(combo.soma)}
+                  </span>
+                  <span className="site-h3 tabular-nums">
+                    {formatBRL(combo.price)}
+                  </span>
+                </p>
+              </div>
+
+              <CtaButton
+                render={
+                  <a
+                    href={whatsappLink(combo.message)}
+                    target="_blank"
+                    rel="noreferrer"
+                  />
+                }
+              >
+                {combo.ctaLabel}
+                <ArrowUpRight className="size-4" aria-hidden />
+              </CtaButton>
+            </div>
           </div>
         </div>
       </div>
