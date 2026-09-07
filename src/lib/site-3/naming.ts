@@ -53,7 +53,7 @@ export const argumento = {
   title: "Nome ruim custa caro, e cobra depois.",
   claimsLabel: "O que está em jogo",
   paragraphs: [
-    "Um nome difícil de falar não é indicado. Um nome difícil de escrever não é encontrado. Um nome parecido com o do concorrente entrega cliente de graça para ele. Nenhum desses problemas aparece no primeiro mês — todos aparecem quando trocar já custa caro.",
+    "Um nome difícil de falar não é indicado. Um nome difícil de escrever não é encontrado. Um nome parecido com o do concorrente entrega cliente de graça para ele. Nenhum desses problemas aparece no primeiro mês, todos aparecem quando trocar já custa caro.",
     "E há o problema que ninguém vê antes da hora: nome que não dá para registrar. Quando a casa já está aberta, a fachada instalada e a rede com seguidores, descobrir que a marca não pode ser sua é o pior momento possível para descobrir.",
   ],
   claims: [
@@ -83,7 +83,7 @@ export type Etapa = {
 export const processo = {
   label: "Como funciona",
   title: "Quatro etapas até a palavra certa.",
-  lead: "Naming não é lista de sugestões. É pesquisa, construção e eliminação — e a maior parte do trabalho está no que a gente descarta.",
+  lead: "Naming não é lista de sugestões. É pesquisa, construção e eliminação, e a maior parte do trabalho está no que a gente descarta.",
   etapas: [
     {
       numero: "01",
@@ -121,7 +121,7 @@ export const tecnicas = {
     },
     {
       title: "Raízes latinas",
-      body: "Construir a partir do latim dá ao nome um significado que sustenta a história da marca, e produz palavras novas — que é justamente o que um registro precisa.",
+      body: "Construir a partir do latim dá ao nome um significado que sustenta a história da marca, e produz palavras novas, que é justamente o que um registro precisa.",
     },
     {
       title: "Palavra nova, não palavra emprestada",
@@ -142,7 +142,7 @@ export const registro = {
   paragraphs: [
     "Todo nome que apresentamos passa por consulta prévia na base do INPI, e a construção já é pensada para reduzir colisão: palavra nova tem menos chance de esbarrar em marca existente do que termo comum da categoria.",
     "Mas é preciso dizer com clareza: **o registro é concedido pelo INPI, que é um órgão independente**. Nenhum estúdio de naming no mundo pode garantir deferimento. O que a gente entrega é um nome construído para ter a melhor chance possível, com a consulta feita e o que encontramos na mesa.",
-    "O depósito do pedido e o acompanhamento do processo são feitos por um agente de propriedade industrial ou advogado especializado. Se você não tiver um, indicamos.",
+    "Deixando claro o limite do serviço: a Cymatica desenvolve o nome. O registro no INPI não faz parte desta proposta e não é feito por nós.",
   ],
 } as const
 
@@ -238,7 +238,7 @@ export const fechamento = {
 export function buildNamingMessage(prazo: Prazo) {
   const total = investimento.price + prazo.fee
   return [
-    "*Proposta de naming — Cymatica*",
+    "*Proposta de naming, Cymatica*",
     "",
     `*Serviço:* ${investimento.name} · ${formatBRL(investimento.price)}`,
     `*Prazo:* ${prazo.days} dias úteis (${prazo.name.toLowerCase()}${
