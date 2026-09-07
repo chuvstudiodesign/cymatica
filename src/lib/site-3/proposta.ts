@@ -41,7 +41,7 @@ export const hero = {
   label: "Proposta de identidade visual",
   title: "Uma marca que já nasce cobrando mais.",
   /** O único lugar da página onde o cliente é nomeado. */
-  personalizacao: "Para Juliano Brandaliss",
+  personalizacao: "Para Juliano Brandalizel",
   body: "Você tem um ponto, um forno e uma data. Falta o que faz alguém escolher a sua porta e voltar na semana seguinte, além da massa. Esta página traz o escopo completo, o preço de cada pacote de design e o prazo. Sem reunião para descobrir o valor.",
   primaryCta: { label: "Escolher um pacote", href: "#pacotes" },
   secondaryCta: {
